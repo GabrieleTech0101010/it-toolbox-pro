@@ -6,67 +6,67 @@
 
 
 🛡️ IT & AI TOOLBOX PRO
-La dashboard offline-first per sistemisti, hacker etici e developer.
 
+The offline-first dashboard for sysadmins, ethical hackers, and developers.
 
-🚀 Cosa c'è dentro il Tool (Le Categorie Chiave)
-🤖 GPT & AI per Hacking Etico
+🚀 What’s Inside the Tool (Key Categories)
+🤖 GPT & AI for Ethical Hacking
 
-Agenti AI per penetration testing (PentestGPT).
+AI agents for penetration testing (PentestGPT).
 
-Scanner di vulnerabilità (OWASP ZAP, Nuclei).
+Vulnerability scanners (OWASP ZAP, Nuclei).
 
-Guide e database di payload per pentesting (HackTricks, SecLists).
+Pentesting payload guides and databases (HackTricks, SecLists).
 
-🔐 Privacy & Sicurezza
+🔐 Privacy & Security
 
-Note e messaggi cifrati ad autodistruzione (Privnote).
+Encrypted self-destructing notes and messages (Privnote).
 
-Alias di posta e gestori password open-source (SimpleLogin, Bitwarden, Proton Pass).
+Email aliases and open-source password managers (SimpleLogin, Bitwarden, Proton Pass).
 
-🎨 AI Web & Slide Builders (Crea in 2 min)
+🎨 AI Web & Slide Builders (Create in 2 min)
 
-Generatori di app e siti web con l'intelligenza artificiale (Bolt.new, v0.dev).
+AI-powered app and website generators (Bolt.new, v0.dev).
 
-Tool rapidi per creare presentazioni e diagrammi (Gamma App, Excalidraw).
+Rapid tools for creating presentations and diagrams (Gamma App, Excalidraw).
 
-🖥️ Sistemistica & Desktop Remoto
+🖥️ System Administration & Remote Desktop
 
-Controllo remoto sicuro e open-source (RustDesk).
+Secure, open-source remote control (RustDesk).
 
-Suite di utility ufficiali per amministratori (Sysinternals).
+Official utility suite for sysadmins (Sysinternals).
 
-Strumenti per creare USB bootable al volo (Ventoy, Rufus).
+Tools to create bootable USB drives on the fly (Ventoy, Rufus).
 
-🩺 Diagnostica Hardware & Benchmark
+🩺 Hardware Diagnostics & Benchmarking
 
-Monitoraggio componenti e sensori PC (CPU-Z, GPU-Z, HWiNFO).
+PC component and sensor monitoring (CPU-Z, GPU-Z, HWiNFO).
 
-Verifica dello stato di salute dei dischi e test RAM (CrystalDiskInfo, MemTest86).
+Disk health checks and RAM testing (CrystalDiskInfo, MemTest86).
 
-🕵️ OSINT & Investigazione
+🕵️ OSINT & Investigation
 
-Framework per la ricerca di informazioni a fonti aperte (OSINT Framework, Shodan, Epieos).
+Frameworks for Open Source Intelligence gathering (OSINT Framework, Shodan, Epieos).
 
-Ricerca avanzata di stringhe e file (Google Hacking DB, DorkSearch).
+Advanced string and file searching (Google Hacking DB, DorkSearch).
 
-🛜 Networking & Analisi Reti
+🛜 Networking & Network Analysis
 
-Analizzatori di pacchetti e traffico (Wireshark, Nmap, Angry IP Scanner).
+Packet and traffic analyzers (Wireshark, Nmap, Angry IP Scanner).
 
-emulatori e simulatori di rete per lab (GNS3, Cisco Packet Tracer).
+Network emulators and simulators for lab environments (GNS3, Cisco Packet Tracer).
 
-📧 Posta & Numeri Temporanei
+📧 Disposable Email & Phone Numbers
 
-Caselle email e numeri di telefono usa e getta per iscrizioni e test (Temp Mail, Quackr).
+Temporary email inboxes and phone numbers for registrations and testing (Temp Mail, Quackr).
 
-🔧 Utility Veloci & CTF
+🔧 Quick Utilities & CTF
 
-Il coltellino svizzero per manipolazione dati e regex (CyberChef, Regex101).
+The Swiss Army knife for data manipulation and regex (CyberChef, Regex101).
 
-Piattaforme di wargame e cybersecurity (CTFtime, OverTheWire Bandit).
+Wargame and cybersecurity platforms (CTFtime, OverTheWire Bandit).
 
-🟢 Caratteristiche Tecniche
-100% Offline: Non richiede server o installazioni complesse, funziona direttamente aprendo il file HTML nel browser.
+🟢 Technical Features
+100% Offline: Requires no server or complex setup—runs directly by opening the HTML file in your browser.
 
-Privacy Totale: I tuoi preferiti vengono salvati esclusivamente in locale nel tuo browser (LocalStorage).
+Total Privacy: Your bookmarks are saved exclusively locally within your browser (LocalStorage).
