@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IT Toolbox Pro — Multi-Style HUD &amp; Risorse IT, AI &amp; Cybersecurity</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>" />
+<style>
+  :root {
+    --bg: #07090e;
+    --bg-grad: radial-gradient(55rem 35rem at 12% -8%, rgba(56, 189, 248, .12), transparent 60%),
+               radial-gradient(45rem 35rem at 92% 10%, rgba(168, 85, 247, .11), transparent 60%),
+               radial-gradient(40rem 35rem at 50% 105%, rgba(16, 185, 129, .09), transparent 60%);
+    --surface: rgba(13, 18, 28, .82);
+    --surface-2: rgba(20, 27, 41, .76);
+    --card-bg: rgba(17, 23, 36, .72);
+    --card-hover: rgba(26, 35, 54, .92);
+    --border: rgba(148, 163, 184, .14);
+    --border-strong: rgba(148, 163, 184, .28);
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --muted-2: #64748b;
+    --primary: #38bdf8;
+    --primary-glow: rgba(56, 189, 248, .28);
+    --secondary: #a855f7;
+    --star: #fbbf24;
+    --radius: 14px;
+    --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
+  }
+
+  /* STILE 2: MATRIX EMERALD OPS */
+  body[data-theme="matrix"] {
+    --bg: #030705;
+    --bg-grad: radial-gradient(50rem 35rem at 15% -10%, rgba(0, 255, 102, .12), transparent 60%),
+               radial-gradient(45rem 35rem at 88% 15%, rgba(16, 185, 129, .10), transparent 60%);
+    --surface: rgba(5, 13, 9, .88);
+    --surface-2: rgba(9, 22, 15, .82);
+    --card-bg: rgba(7, 17, 12, .78);
+    --card-hover: rgba(12, 29, 20, .95);
+    --border: rgba(0, 255, 102, .16);
+    --border-strong: rgba(0, 255, 102, .36);
+    --text: #e2fbe9;
+    --muted: #86efac;
+    --muted-2: #4ade80;
+    --primary: #00ff66;
+    --primary-glow: rgba(0, 255, 102, .32);
+    --secondary: #10b981;
+  }
+
+  /* STILE 3: CRIMSON RED-TEAM COMMAND */
+  body[data-theme="crimson"] {
+    --bg: #0b0507;
+    --bg-grad: radial-gradient(50rem 35rem at 15% -10%, rgba(244, 63, 94, .14), transparent 60%),
+               radial-gradient(45rem 35rem at 90% 15%, rgba(251, 146, 60, .10), transparent 60%);
+    --surface: rgba(18, 8, 12, .88);
+    --surface-2: rgba(28, 12, 18, .82);
+    --card-bg: rgba(22, 10, 15, .78);
+    --card-hover: rgba(36, 15, 23, .95);
+    --border: rgba(244, 63, 94, .18);
+    --border-strong: rgba(244, 63, 94, .38);
+    --text: #fff1f2;
+    --muted: #fda4af;
+    --muted-2: #fb7185;
+    --primary: #fb7185;
+    --primary-glow: rgba(244, 63, 94, .32);
+    --secondary: #f97316;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    transition: background .25s ease, color .25s ease;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0; z-index: -2;
+    background: var(--bg-grad);
+    pointer-events: none;
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0; z-index: -1; opacity: .04; pointer-events: none;
+    background-image: linear-gradient(var(--muted) 1px, transparent 1px), linear-gradient(90deg, var(--muted) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
+  ::-webkit-scrollbar { width: 7px; height: 7px; }
+  ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, .25); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, .42); }
+
+  a { color: inherit; text-decoration: none; }
+  button, select { font-family: inherit; cursor: pointer; }
+
+  /* INTRO GATE (SNAPPY & CLEAN) */
+  #gate {
+    position: fixed; inset: 0; z-index: 200;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(5, 7, 12, .94); backdrop-filter: blur(18px);
+    transition: opacity .35s ease, visibility .35s ease;
+  }
+  #gate.hidden-gate { opacity: 0; visibility: hidden; pointer-events: none; }
+  .gate-card {
+    width: 100%; max-width: 560px;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: 18px; padding: 28px;
+    box-shadow: 0 28px 70px -15px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.03) inset;
+  }
+  .gate-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    color: var(--primary); background: rgba(255,255,255,.04);
+    border: 1px solid var(--border-strong); border-radius: 999px;
+    padding: 5px 12px; margin-bottom: 14px;
+  }
+  .gate-card h1 { margin: 0 0 8px; font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .gate-card p { margin: 0 0 20px; color: var(--muted); font-size: 13.5px; line-height: 1.55; }
+  .style-picker-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px;
+  }
+  @media (max-width: 520px) { .style-picker-grid { grid-template-columns: 1fr; } }
+  .style-option {
+    text-align: left; padding: 12px; border-radius: 12px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); transition: .15s ease;
+  }
+  .style-option:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+  .style-option.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-glow); }
+  .style-option strong { display: block; font-size: 12.5px; margin-bottom: 3px; }
+  .style-option span { display: block; font-size: 11px; color: var(--muted); }
+  .gate-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .gate-metrics { display: flex; gap: 16px; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+  .gate-metrics b { color: var(--text); }
+  .launch-btn {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #04070b; font-weight: 800; font-size: 13.5px;
+    border: none; border-radius: 12px; padding: 11px 22px;
+    box-shadow: 0 10px 28px -8px var(--primary-glow);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .launch-btn:hover { transform: translateY(-1px); box-shadow: 0 14px 32px -6px var(--primary-glow); }
+
+  /* APP SHELL */
+  .shell { display: flex; height: 100vh; overflow: hidden; }
+
+  /* SIDEBAR */
+  aside#sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 286px; z-index: 50;
+    background: var(--surface); backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    transform: translateX(-100%); transition: transform .25s ease;
+  }
+  aside#sidebar.open { transform: translateX(0); }
+  @media (min-width: 1024px) {
+    aside#sidebar { position: relative; transform: translateX(0); flex-shrink: 0; }
+    #overlay { display: none !important; }
+  }
+  #overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.62); z-index: 45; display: none;
+  }
+  #overlay.show { display: block; }
+
+  .side-top {
+    padding: 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .side-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .side-logo {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 17px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #05080d; font-weight: 900; flex-shrink: 0;
+  }
+  .side-brand-title { font-size: 14px; font-weight: 800; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .side-brand-sub { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin: 1px 0 0; }
+
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: .15s ease;
+  }
+  .icon-btn:hover { border-color: var(--border-strong); background: var(--card-hover); }
+
+  #catNav { flex: 1; overflow-y: auto; padding: 12px 10px; }
+  .nav-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 9px 11px; margin-bottom: 3px; border-radius: 10px;
+    background: transparent; border: 1px solid transparent; color: var(--muted);
+    font-size: 13px; font-weight: 500; text-align: left; transition: .14s ease;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,.04); color: var(--text); }
+  .nav-btn.active {
+    background: rgba(255,255,255,.07); border-color: var(--border-strong);
+    color: var(--text); font-weight: 700;
+  }
+  .nav-left { display: flex; align-items: center; gap: 9px; min-width: 0; }
+  .nav-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav-badge {
+    font-family: var(--font-mono); font-size: 10.5px; padding: 2px 7px; border-radius: 999px;
+    background: rgba(255,255,255,.06); color: var(--muted); flex-shrink: 0;
+  }
+  .nav-divider { height: 1px; background: var(--border); margin: 10px 4px; }
+
+  .side-foot {
+    padding: 12px 16px; border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--muted); display: flex; flex-direction: column; gap: 4px;
+  }
+
+  /* MAIN AREA */
+  .main-col { flex: 1; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
+
+  header.topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--surface); backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 18px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  }
+  #mobileMenuBtn { display: inline-flex; }
+  @media (min-width: 1024px) { #mobileMenuBtn { display: none; } }
+
+  .search-box { position: relative; flex: 1; min-width: 220px; }
+  #searchInput {
+    width: 100%; height: 38px; padding: 0 70px 0 36px; border-radius: 11px;
+    background: rgba(0,0,0,.28); border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; outline: none; transition: .15s ease;
+  }
+  #searchInput:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+  #searchInput::placeholder { color: var(--muted-2); }
+  .search-ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
+  .kbd-hint {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+    background: rgba(255,255,255,.06); border: 1px solid var(--border);
+    padding: 2px 6px; border-radius: 5px; pointer-events: none;
+  }
+  #clearBtn {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 22px; height: 22px; border-radius: 999px; border: none;
+    background: rgba(255,255,255,.12); color: var(--text); font-size: 11px; display: none;
+    align-items: center; justify-content: center;
+  }
+
+  .controls-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .theme-select {
+    height: 38px; padding: 0 10px; border-radius: 11px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 12px; font-weight: 600; outline: none;
+  }
+  .theme-select option { background: #0d121c; color: #f1f5f9; }
+
+  .pill-counter {
+    display: none; align-items: center; height: 38px; padding: 0 12px;
+    border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: 11.5px; color: var(--muted);
+  }
+  @media (min-width: 768px) { .pill-counter { display: inline-flex; } }
+
+  .fav-toggle {
+    height: 38px; padding: 0 12px; border-radius: 11px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 12.5px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .fav-toggle.active { border-color: var(--star); background: rgba(251, 191, 36, .14); color: var(--star); }
+
+  /* CONTENT */
+  main.workspace { max-width: 1600px; width: 100%; margin: 0 auto; padding: 22px 18px; flex: 1; }
+  .hero-bar {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .hero-bar h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; letter-spacing: -.015em; }
+  .hero-bar p { margin: 0; font-size: 13px; color: var(--muted); }
+  .bulk-actions { display: flex; gap: 8px; }
+  .ghost-btn {
+    padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 600;
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--muted);
+    transition: .14s ease;
+  }
+  .ghost-btn:hover { border-color: var(--border-strong); color: var(--text); }
+
+  .group-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 14px; overflow: hidden;
+  }
+  .group-head {
+    width: 100%; padding: 14px 16px; background: transparent; border: none;
+    color: var(--text); display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    text-align: left; transition: background .14s ease;
+  }
+  .group-head:hover { background: rgba(255,255,255,.03); }
+  .group-title-wrap { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .group-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
+  }
+  .group-title-wrap h3 { margin: 0; font-size: 14.5px; font-weight: 700; }
+  .group-title-wrap span { display: block; font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+  .group-meta { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .group-count {
+    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    padding: 3px 9px; border-radius: 999px;
+  }
+  .chev { transition: transform .22s ease; color: var(--muted); }
+  .group-box.open .chev { transform: rotate(180deg); }
+
+  .group-panel { display: none; border-top: 1px solid var(--border); padding: 16px; }
+  .group-box.open .group-panel { display: block; }
+
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(1, 1fr); gap: 12px;
+  }
+  @media (min-width: 640px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1420px) { .cards-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .res-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 13px; padding: 14px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+  }
+  .res-card:hover {
+    transform: translateY(-2px); border-color: var(--border-strong); background: var(--card-hover);
+  }
+  .res-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .res-identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .res-badge-ico {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
+  }
+  .res-name { margin: 0; font-size: 13.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .res-host { margin: 2px 0 0; font-family: var(--font-mono); font-size: 10.5px; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .star-btn {
+    width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+    background: rgba(255,255,255,.04); border: 1px solid var(--border);
+    color: var(--muted); font-size: 14px; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .star-btn.starred { color: var(--star); border-color: rgba(251, 191, 36, .45); background: rgba(251, 191, 36, .12); }
+
+  .res-desc {
+    margin: 0; font-size: 12px; line-height: 1.45; color: var(--muted);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    min-height: 34px;
+  }
+
+  .res-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .cat-tag {
+    font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 999px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 175px;
+  }
+  .res-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .mini-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    color: var(--text); font-size: 12px; display: inline-flex; align-items: center; justify-content: center;
+  }
+  .mini-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+  .empty-box {
+    border: 1px dashed var(--border-strong); border-radius: 16px;
+    padding: 64px 20px; text-align: center; color: var(--muted);
+    background: var(--surface);
+  }
+
+  footer.foot {
+    border-top: 1px solid var(--border); padding: 14px 18px;
+    text-align: center; font-size: 11.5px; color: var(--muted-2);
+  }
+
+  #toasts {
+    position: fixed; right: 18px; bottom: 18px; z-index: 120;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .toast-item {
+    background: var(--surface); border: 1px solid var(--primary);
+    color: var(--text); padding: 10px 14px; border-radius: 11px;
+    font-size: 12.5px; box-shadow: 0 14px 30px rgba(0,0,0,.5);
+  }
+</style>
+</head>
+<body data-theme="slate">
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-pill">⚡ IT TOOLBOX PRO · MULTI-STYLE HUD</div>
+    <h1>Scegli lo stile della tua Toolbox</h1>
+    <p>Tutte le categorie, le risorse e i preferiti salvati nel browser restano identici: cambia solo l'estetica e la modalità visiva.</p>
+
+    <div class="style-picker-grid" id="gateStyleGrid">
+      <button type="button" class="style-option selected" data-pick="slate">
+        <strong>🧊 Slate Glass HUD</strong>
+        <span>Moderno, pulito, vetro scuro con accenti azzurro/viola</span>
+      </button>
+      <button type="button" class="style-option" data-pick="matrix">
+        <strong>🟢 Cyber Terminal</strong>
+        <span>Estetica hacker/terminale verde fosforo ad alto contrasto</span>
+      </button>
+      <button type="button" class="style-option" data-pick="crimson">
+        <strong>🔴 Red-Team Ops</strong>
+        <span>Tema tattico rosso cremisi e ambra per analisi e pentest</span>
+      </button>
+    </div>
+
+    <div class="gate-actions">
+      <div class="gate-metrics">
+        <span><b id="gateCats">0</b> categorie</span>
+        <span><b id="gateRes">0</b> risorse</span>
+      </div>
+      <button type="button" class="launch-btn" id="launchBtn">Apri Toolbox →</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <div id="overlay"></div>
+  <aside id="sidebar">
+    <div class="side-top">
+      <div class="side-brand">
+        <div class="side-logo">🛡️</div>
+        <div style="min-width:0;">
+          <p class="side-brand-title">IT Toolbox Pro</p>
+          <p class="side-brand-sub" id="sideStats">0 cat · 0 tool</p>
+        </div>
+      </div>
+      <button type="button" class="icon-btn" id="closeMenuBtn" aria-label="Chiudi menu">✕</button>
+    </div>
+    <nav id="catNav" aria-label="Categorie"></nav>
+    <div class="side-foot">
+      <span>🟢 Offline-first · Preferiti in LocalStorage</span>
+      <span id="lastModLbl">🕒 Ultima modifica: 19/11/2026</span>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <header class="topbar">
+      <button type="button" class="icon-btn" id="mobileMenuBtn" aria-label="Apri menu">☰</button>
+
+      <div class="search-box">
+        <span class="search-ico">🔎</span>
+        <input id="searchInput" type="text" placeholder="Filtra per nome, descrizione, URL o categoria..." autocomplete="off" />
+        <span class="kbd-hint">Ctrl+K</span>
+        <button type="button" id="clearBtn" title="Pulisci ricerca">✕</button>
+      </div>
+
+      <div class="controls-right">
+        <select id="themeSelect" class="theme-select" aria-label="Seleziona stile">
+          <option value="slate">🧊 Stile: Slate Glass</option>
+          <option value="matrix">🟢 Stile: Cyber Terminal</option>
+          <option value="crimson">🔴 Stile: Red-Team Ops</option>
+        </select>
+        <span class="pill-counter" id="pillCount">0 risultati</span>
+        <button type="button" class="fav-toggle" id="favToggle">⭐ <span id="favBadge">0</span></button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <div class="hero-bar">
+        <div>
+          <h2 id="viewTitle">Tutte le risorse</h2>
+          <p id="viewSub">Raccolta completa di strumenti IT, AI, OSINT, Networking e Cybersecurity.</p>
+        </div>
+        <div class="bulk-actions" id="bulkBar">
+          <button type="button" class="ghost-btn" id="expandAllBtn">Espandi tutto</button>
+          <button type="button" class="ghost-btn" id="collapseAllBtn">Comprimi tutto</button>
+        </div>
+      </div>
+      <div id="gridContainer"></div>
+    </main>
+
+    <footer class="foot" id="footInfo"></footer>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+const CATEGORIES = [
+  // NUOVE CATEGORIE OFFENSIVE SECURITY & PENTESTING DALLE SCHERMATE
+  { id:"info-gathering", label:"Raccolta Informazioni & Recon", emoji:"🔍", color:"#38bdf8", description:"Scanner di porte, enumerazione sottodomini, OSINT e ricognizione" },
+  { id:"wordlists-pass", label:"Wordlist & Password Cracking", emoji:"📚", color:"#f59e0b", description:"Generatori di elenchi di parole, cracking di hash e attacchi credenziali" },
+  { id:"wireless-attacks", label:"Strumenti di Attacco Wireless", emoji:"📡", color:"#10b981", description:"Auditing reti Wi-Fi, Bluetooth, cattura handshake e attacchi WPS" },
+  { id:"sql-injection", label:"Strumenti per l'Iniezione SQL", emoji:"💉", color:"#ef4444", description:"Scanner e sfruttamento vulnerabilità SQL e NoSQL injection" },
+  { id:"phishing-social", label:"Strumenti per Attacchi di Phishing", emoji:"🎣", color:"#f43f5e", description:"Simulazioni di phishing, ingegneria sociale e clonazione pagine" },
+  { id:"web-attacks", label:"Strumenti per Attacchi Web", emoji:"🌐", color:"#ec4899", description:"Fuzzing directory, scanner vulnerabilità web, WAF detector e proxy" },
+  { id:"post-exploitation", label:"Strumenti di Post-Sfruttamento", emoji:"🔧", color:"#a855f7", description:"Privilege escalation, movimento laterale, tunneling e C2 framework" },
+  { id:"payload-creation", label:"Creazione di Payload", emoji:"📦", color:"#eab308", description:"Generatori di shellcode, reverse shell e binari living-off-the-land" },
+  { id:"exploit-frameworks", label:"Framework di Exploit", emoji:"🧰", color:"#dc2626", description:"Piattaforme di sfruttamento, database di exploit e auditing IoT" },
+  { id:"reverse-eng-full", label:"Reverse Engineering & Analisi", emoji:"🔄", color:"#8b5cf6", description:"Decompilazione APK, debugging binario e analisi malware" },
+
+  // CATEGORIE SPECIALI AI & HACKING
+  { id:"ai-cybersecurity", label:"GPT & AI per Hacking Etico", emoji:"🤖", color:"#ef4444", description:"Agenti AI avanzati per Pentesting, Bug Bounty, Malware e Forensics" },
+  { id:"privacy-security", label:"Privacy & Messaggi Segreti", emoji:"🔐", color:"#10b981", description:"Messaggi autodistruggenti, numeri temporanei e anonimato online" },
+  { id:"media-downloader", label:"Media Downloader & Live Streaming", emoji:"🎬", color:"#f43f5e", description:"Download senza filigrana da social, TV in diretta e streaming" },
+  { id:"media-editing", label:"Fotoritocco & AI Media Tools", emoji:"🎨", color:"#ec4899", description:"Modifica testo in immagini, fotoritocco rapido e utility media" },
+  { id:"fun-utility", label:"Prank, Libri & Utility Curiosità", emoji:"🎭", color:"#eab308", description:"Falsi aggiornamenti OS per pause, riassunti audio libri e tool curiosi" },
+
+  // CATEGORIE PRO SITI & SLIDE
+  { id:"ai-websites", label:"AI Web Builders (Siti in 2 min)", emoji:"🚀", color:"#ec4899", description:"Crea siti web completi, landing page e UI con prompt AI in 2 minuti" },
+  { id:"ai-presentations", label:"AI Presentations (Slide in 2 min)", emoji:"📊", color:"#a855f7", description:"Genera presentazioni, pitch deck e slide trascinanti con l'IA" },
+  { id:"sysadmin-remote", label:"Sistemistica & Desktop Remoto", emoji:"🖥️", color:"#3b82f6", description:"Strumenti di assistenza remota, controllo ed enterprise management" },
+  { id:"backup-recovery", label:"Backup & Data Recovery", emoji:"💾", color:"#10b981", description:"Tool di salvataggio dati, clonabilità dischi e recupero file persi" },
+  { id:"automation-scripting", label:"Automazione & Scripting", emoji:"⚡", color:"#eab308", description:"PowerShell, Bash, Batch e tool di automazione compiti ripetitivi" },
+
+  // CATEGORIE IT GENERALE
+  { id:"informatica", label:"Informatica Generale", emoji:"💻", color:"#38bdf8", description:"Risorse generali, portali e news del mondo IT" },
+  { id:"programmazione", label:"Programmazione", emoji:"📝", color:"#818cf8", description:"Piattaforme di esercizio, algoritmi e coding" },
+  { id:"webdev", label:"HTML / CSS / JavaScript", emoji:"🌐", color:"#fb923c", description:"Sviluppo front-end e riferimenti web" },
+  { id:"python", label:"Python", emoji:"🐍", color:"#facc15", description:"Documentazione, framework e tool Python" },
+  { id:"java", label:"Java", emoji:"☕", color:"#f87171", description:"Ecosistema Java, framework e IDE" },
+  { id:"csharp", label:"C# / .NET", emoji:"🔷", color:"#c084fc", description:".NET, C# e strumenti Microsoft" },
+  { id:"linux", label:"Linux & Terminale", emoji:"🐧", color:"#a3e635", description:"Distribuzioni, wiki e comandi da terminale" },
+  { id:"windows", label:"Windows & Tweak", emoji:"🪟", color:"#22d3ee", description:"Sistema operativo, utility e PowerShell" },
+  { id:"networking", label:"Networking & Wi-Fi", emoji:"🔗", color:"#2dd4bf", description:"Reti, protocolli, Wi-Fi e analisi del traffico" },
+  { id:"dns", label:"DNS & Dominio", emoji:"🌍", color:"#60a5fa", description:"Lookup, propagazione e diagnostica DNS" },
+  { id:"cloud", label:"Cloud & Hosting", emoji:"☁️", color:"#7dd3fc", description:"Provider cloud, hosting e deploy" },
+  { id:"docker", label:"Docker & Kubernetes", emoji:"🐳", color:"#93c5fd", description:"Container, orchestrazione e immagini" },
+  { id:"git", label:"Git / GitHub", emoji:"🔀", color:"#cbd5e1", description:"Versionamento del codice e collaborazione" },
+  { id:"api", label:"API & Web Services", emoji:"🔌", color:"#e879f9", description:"Test, documentazione e design delle API" },
+  { id:"database", label:"Database SQL & NoSQL", emoji:"🗄️", color:"#34d399", description:"SQL, NoSQL e gestione dati" },
+  { id:"devops", label:"DevOps & CI/CD", emoji:"⚙️", color:"#fbbf24", description:"CI/CD, automazione e infrastruttura" },
+  { id:"cybersecurity", label:"Cybersecurity", emoji:"🛡️", color:"#fb7185", description:"Sicurezza informatica e best practice" },
+  { id:"pentesting", label:"Pentesting & Lab", emoji:"⚔️", color:"#ef4444", description:"Penetration testing e lab pratici" },
+  { id:"osint", label:"OSINT & Investigazione", emoji:"🕵️", color:"#4ade80", description:"Piattaforme OSINT per ricerca email, username, leak, GEOINT, mappe, domini e social" },
+  { id:"reverse", label:"Reverse Engineering (Base)", emoji:"🔬", color:"#a78bfa", description:"Disassembly, debugging e analisi binari" },
+  { id:"malware", label:"Malware Analysis", emoji:"🐛", color:"#fb923c", description:"Sandbox, analisi dinamica e statica" },
+  { id:"threatintel", label:"Threat Intelligence", emoji:"📡", color:"#f472b6", description:"Feed di minacce e indicatori di compromissione" },
+  { id:"tempmail", label:"Email Temporanee", emoji:"📧", color:"#67e8f9", description:"Caselle email usa e getta per registrazioni e test" },
+  { id:"virtualnumbers", label:"Numeri Virtuali", emoji:"📱", color:"#bef264", description:"SMS e numeri temporanei per verifiche" },
+  { id:"iplookup", label:"IP Lookup & Geolocation", emoji:"📍", color:"#fca5a5", description:"Geolocalizzazione IP, ISP e diagnostica" },
+  { id:"googledorks", label:"Google Dorks", emoji:"🔎", color:"#3b82f6", description:"Motore Google e tecniche di ricerca avanzata" },
+  { id:"ai", label:"AI Assistant & LLM", emoji:"🤖", color:"#a5b4fc", description:"Intelligenza artificiale generativa e modelli linguistici" },
+  { id:"aicoding", label:"AI Coding Assistants", emoji:"🧠", color:"#f0abfc", description:"Assistenti AI per generare, spiegare e refactorizzare codice" },
+  { id:"utility", label:"Utility Veloci", emoji:"🔧", color:"#94a3b8", description:"Strumenti online rapidi per conversione e calcoli" },
+  { id:"docs", label:"Documentazione Tecnica", emoji:"📚", color:"#fde047", description:"Riferimenti tecnici e standard ufficiali" },
+  { id:"ctf", label:"CTF & Security Games", emoji:"🚩", color:"#6ee7b7", description:"Capture The Flag e wargame di sicurezza" },
+  { id:"certificazioni", label:"Certificazioni IT", emoji:"🎓", color:"#fdba74", description:"Percorsi di certificazione ufficiali per il mondo IT" },
+  { id:"hardware", label:"Hardware & Modding", emoji:"🔩", color:"#f97316", description:"Componenti, single-board computer ed elettronica" },
+  { id:"hwdiag", label:"Diagnostica Hardware & Benchmark", emoji:"🩺", color:"#f43f5e", description:"Scansiona PC e componenti per individuare guasti e stabilità" },
+  { id:"podcast", label:"Podcast & YouTube Tech", emoji:"🎙️", color:"#38bdf8", description:"Canali e podcast italiani e internazionali sul mondo IT" },
+  { id:"net-labs", label:"Laboratori & Emulazione Reti", emoji:"🛜", color:"#a855f7", description:"Piattaforme di emulazione, virtualizzazione e lab di rete" },
+  { id:"firmware-bios", label:"Firmware & BIOS Repository", emoji:"💾", color:"#f59e0b", description:"Download, modifiche e database di BIOS, VBIOS e firmware" },
+  { id:"regex-parser", label:"Regex & Parser Utilities", emoji:"🔣", color:"#06b6d4", description:"Parsing di log, regex tester e manipolazione stringhe al volo" },
+  { id:"monitoring-snmp", label:"Monitoraggio & SNMP Tools", emoji:"📊", color:"#10b981", description:"Supervisione server, traffico di rete e metriche SNMP/UPnP" },
+  { id:"cabling-standards", label:"Cablaggio & Standard di Rete", emoji:"🔌", color:"#ef4444", description:"Schemi di crimpatura RJ45, codici colore e guide rame/fibra" },
+  { id:"antivirus-sec", label:"Antivirus & Rilevamento Malware", emoji:"🛡️", color:"#ef4444", description:"Strumenti di scansione, rimozione malware ed euristiche antivirus" },
+  { id:"data-recovery", label:"Recupero Dati & Dischi", emoji:"🩹", color:"#10b981", description:"Ripristino file eliminati, partizioni corrotte e file system" },
+  { id:"net-utilities", label:"Rete & Diagnostica Connessioni", emoji:"🌐", color:"#38bdf8", description:"Strumenti per analisi pacchetti, diagnostica IP, routing e socket" },
+  { id:"db-tools", label:"Database & Query Managers", emoji:"🗄️", color:"#a855f7", description:"Client universali, gestione SQL/NoSQL e ottimizzazione query" },
+  { id:"boot-usb", label:"Boot USB & Live OS", emoji:"🔌", color:"#f59e0b", description:"Utility per la creazione di USB avviabili, ISO live e rescue disk" },
+  { id:"backup-sync", label:"Backup & Sincronizzazione Dati", emoji:"📦", color:"#06b6d4", description:"Soluzioni di backup automatizzato, immagini di sistema e replica" }
+];
+const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+
+const RESOURCES = [
+  {id:"info-gathering-1",category:"info-gathering",name:"Mappa di rete (Nmap)",description:"Scanner di rete, scansione delle porte e ricognizione avanzata",url:"https://nmap.org"},
+  {id:"info-gathering-2",category:"info-gathering",name:"Port Scanning (Online/CLI)",description:"Strumenti di scansione porte e verifica servizi attivi",url:"https://hackertarget.com/nmap-online-port-scanner/"},
+  {id:"info-gathering-3",category:"info-gathering",name:"Host to IP",description:"Risoluzione DNS e ricerca indirizzo IP da dominio",url:"https://dnschecker.org/domain-to-ip.php"},
+  {id:"info-gathering-4",category:"info-gathering",name:"RED HAWK",description:"Scansione tutto in uno per web recon, vulnerability e fingerprinting",url:"https://github.com/Tuhinshubhra/RED_HAWK"},
+  {id:"info-gathering-5",category:"info-gathering",name:"ReconSpider",description:"Framework OSINT completo per scansioni e web crawling",url:"https://github.com/bhavsec/reconspider"},
+  {id:"info-gathering-6",category:"info-gathering",name:"IsItDown",description:"Verifica immediata se un sito web è attivo o irraggiungibile",url:"https://www.isitdownrightnow.com"},
+  {id:"info-gathering-7",category:"info-gathering",name:"SecretFinder",description:"Scopri chiavi API, token e segreti nascosti nei file JavaScript",url:"https://github.com/m4ll0k/SecretFinder"},
+  {id:"info-gathering-8",category:"info-gathering",name:"Scanner di porte - rang3r",description:"Scanner multi-thread veloce per porte e indirizzi IP",url:"https://github.com/floriankunushevci/rang3r"},
+  {id:"info-gathering-9",category:"info-gathering",name:"Intruso (Intruder)",description:"Strumento di enumerazione web e ricognizione vulnerabilità",url:"https://github.com/1N3/IntruderPayloads"},
+  {id:"info-gathering-10",category:"info-gathering",name:"theHarvester",description:"Raccolta OSINT di email, sottodomini, host e nomi da fonti pubbliche",url:"https://github.com/laramies/theHarvester"},
+  {id:"info-gathering-11",category:"info-gathering",name:"Amass (OWASP)",description:"Mappatura approfondita della superficie di attacco ed enumerazione DNS",url:"https://github.com/owasp-amass/amass"},
+  {id:"info-gathering-12",category:"info-gathering",name:"Masscan",description:"Scanner di porte TCP asincrono ultra-veloce per intere reti",url:"https://github.com/robertdavidgraham/masscan"},
+  {id:"info-gathering-13",category:"info-gathering",name:"RustScan",description:"Il moderno scanner di porte scritto in Rust che alimenta Nmap",url:"https://github.com/RustScan/RustScan"},
+  {id:"info-gathering-14",category:"info-gathering",name:"Holehe",description:"Verifica se un indirizzo email è registrato su oltre 120 piattaforme",url:"https://github.com/megadose/holehe"},
+  {id:"info-gathering-15",category:"info-gathering",name:"Maigret",description:"Raccoglie dossier su un nome utente da migliaia di siti web",url:"https://github.com/soxoj/maigret"},
+  {id:"info-gathering-16",category:"info-gathering",name:"httpx (ProjectDiscovery)",description:"Toolkit HTTP veloce e multi-scopo per probing e fingerprinting",url:"https://github.com/projectdiscovery/httpx"},
+  {id:"info-gathering-17",category:"info-gathering",name:"SpiderFoot",description:"Automazione OSINT completa per intelligence su IP, domini ed email",url:"https://github.com/smicallef/spiderfoot"},
+  {id:"info-gathering-18",category:"info-gathering",name:"Subfinder (Ricerca sottodomini)",description:"Strumento veloce di enumerazione passiva dei sottodomini",url:"https://github.com/projectdiscovery/subfinder"},
+  {id:"info-gathering-19",category:"info-gathering",name:"TruffleHog",description:"Scanner di credenziali, chiavi API e segreti nei repository Git",url:"https://github.com/trufflesecurity/trufflehog"},
+  {id:"info-gathering-20",category:"info-gathering",name:"Gitleaks",description:"Rileva segreti hardcodati, password e token nella cronologia Git",url:"https://github.com/gitleaks/gitleaks"},
+  {id:"info-gathering-21",category:"info-gathering",name:"naabu",description:"Scanner di porte veloce e affidabile scritto in Go",url:"https://github.com/projectdiscovery/naabu"},
+  {id:"info-gathering-22",category:"info-gathering",name:"dnsx",description:"Toolkit DNS multi-scopo veloce per query e risoluzione massiva",url:"https://github.com/projectdiscovery/dnsx"},
+  {id:"wordlists-pass-23",category:"wordlists-pass",name:"Cupp",description:"Common User Passwords Profiler: genera wordlist profilate su target OSINT",url:"https://github.com/Mebus/cupp"},
+  {id:"wordlists-pass-24",category:"wordlists-pass",name:"Hashcat",description:"Il password cracker basato su GPU più veloce e avanzato al mondo",url:"https://hashcat.net/hashcat/"},
+  {id:"wordlists-pass-25",category:"wordlists-pass",name:"John the Ripper",description:"Strumento storico e versatile per cracking di hash e password auditing",url:"https://www.openwall.com/john/"},
+  {id:"wordlists-pass-26",category:"wordlists-pass",name:"haiti",description:"Identificatore rapido del tipo di hash da riga di comando",url:"https://github.com/noraj/haiti"},
+  {id:"wordlists-pass-27",category:"wordlists-pass",name:"crunch",description:"Generatore di liste di parole personalizzate tramite charset e pattern",url:"https://sourceforge.net/projects/crunch-wordlist/"},
+  {id:"wordlists-pass-28",category:"wordlists-pass",name:"CeWL",description:"Custom Word List generator: estrae parole chiave direttamente da siti web",url:"https://github.com/digininja/CeWL"},
+  {id:"wordlists-pass-29",category:"wordlists-pass",name:"SecLists",description:"La raccolta definitiva di wordlist, username, password e payload",url:"https://github.com/danielmiessler/SecLists"},
+  {id:"wordlists-pass-30",category:"wordlists-pass",name:"Kali Wordlists (rockyou)",description:"Pacchetto completo di dizionari tra cui la celebre rockyou.txt",url:"https://gitlab.com/kalilinux/packages/wordlists"},
+  {id:"wireless-attacks-31",category:"wireless-attacks",name:"WiFi-Pumpkin",description:"Framework per creare rogue Access Point ed eseguire attacchi MITM",url:"https://github.com/P0cL4bs/wifipumpkin3"},
+  {id:"wireless-attacks-32",category:"wireless-attacks",name:"pixiewps",description:"Strumento offline per sfruttare vulnerabilità WPS Pixie Dust",url:"https://github.com/wiire-a/pixiewps"},
+  {id:"wireless-attacks-33",category:"wireless-attacks",name:"Bluepot (Honeypot Bluetooth)",description:"Framework GUI per il rilevamento e l'analisi di attacchi Bluetooth",url:"https://github.com/andrewmichaelsmith/bluepot"},
+  {id:"wireless-attacks-34",category:"wireless-attacks",name:"Fluxion",description:"Suite di auditing Wi-Fi basata su ingegneria sociale e Evil Twin",url:"https://github.com/FluxionNetwork/fluxion"},
+  {id:"wireless-attacks-35",category:"wireless-attacks",name:"Wifiphisher",description:"Strumento automatizzato per attacchi phishing su reti Wi-Fi",url:"https://github.com/wifiphisher/wifiphisher"},
+  {id:"wireless-attacks-36",category:"wireless-attacks",name:"Wifite",description:"Auditor wireless automatizzato per attaccare reti WEP, WPA e WPS",url:"https://github.com/derv82/wifite2"},
+  {id:"wireless-attacks-37",category:"wireless-attacks",name:"Howmanypeoplearearound",description:"Monitora quante persone sono nelle vicinanze sniffando i probe Wi-Fi",url:"https://github.com/schollz/howmanypeoplearearound"},
+  {id:"wireless-attacks-38",category:"wireless-attacks",name:"Airgeddon",description:"Suite bash multi-uso completa per l'auditing di reti wireless",url:"https://github.com/v1s1t0r1sh3r3/airgeddon"},
+  {id:"wireless-attacks-39",category:"wireless-attacks",name:"hcxdumptool",description:"Strumento per catturare pacchetti e PMKID da dispositivi WLAN",url:"https://github.com/ZerBea/hcxdumptool"},
+  {id:"wireless-attacks-40",category:"wireless-attacks",name:"hcxtools",description:"Converte file pcapng in formati compatibili con Hashcat e John",url:"https://github.com/ZerBea/hcxtools"},
+  {id:"wireless-attacks-41",category:"wireless-attacks",name:"Bettercap",description:"Coltellino svizzero per attacchi MITM su reti Wi-Fi, BLE ed Ethernet",url:"https://www.bettercap.org"},
+  {id:"wireless-attacks-42",category:"wireless-attacks",name:"Aircrack-ng",description:"Suite completa per monitoraggio, cattura e cracking di reti Wi-Fi",url:"https://www.aircrack-ng.org"},
+  {id:"wireless-attacks-43",category:"wireless-attacks",name:"Kismet",description:"Rilevatore wireless, sniffer di pacchetti e sistema WIDS",url:"https://www.kismetwireless.net"},
+  {id:"wireless-attacks-44",category:"wireless-attacks",name:"Reaver",description:"Attacco brute-force contro i PIN registratore Wi-Fi Protected Setup (WPS)",url:"https://github.com/t6x/reaver-wps-fork-t6x"},
+  {id:"wireless-attacks-45",category:"wireless-attacks",name:"WiGLE",description:"Mappa mondiale e API delle reti wireless geolocalizzate",url:"https://wigle.net"},
+  {id:"wireless-attacks-46",category:"wireless-attacks",name:"Hashcat WPA 22000 Mode",description:"Esempi di hash e guida al cracking WPA/WPA2 in modalità 22000",url:"https://hashcat.net/wiki/doku.php?id=example_hashes"},
+  {id:"wireless-attacks-47",category:"wireless-attacks",name:"Aircrack-ng WPA Tutorial",description:"Guida ufficiale passo-passo al cracking di handshake WPA/WPA2",url:"https://www.aircrack-ng.org/doku.php?id=cracking_wpa"},
+  {id:"sql-injection-48",category:"sql-injection",name:"Sqlmap",description:"Lo strumento open-source definitivo per rilevare e sfruttare SQL injection",url:"https://sqlmap.org"},
+  {id:"sql-injection-49",category:"sql-injection",name:"NoSQLMap",description:"Strumento automatizzato per audit e sfruttamento database NoSQL",url:"https://github.com/codingo/NoSQLMap"},
+  {id:"sql-injection-50",category:"sql-injection",name:"Damn Small SQLi Scanner",description:"Scanner SQL injection completo scritto in meno di 100 righe di Python",url:"https://github.com/stamparm/DSSS"},
+  {id:"sql-injection-51",category:"sql-injection",name:"SQLScan",description:"Scanner web veloce per individuare punti di iniezione SQL",url:"https://github.com/Cvar1984/sqlscan"},
+  {id:"sql-injection-52",category:"sql-injection",name:"Ghauri",description:"Strumento moderno e avanzato in Python per rilevare e sfruttare SQLi",url:"https://github.com/r0oth3x49/ghauri"},
+  {id:"sql-injection-53",category:"sql-injection",name:"PortSwigger SQL Injection Labs",description:"Laboratori pratici gratuiti per padroneggiare ogni tecnica SQLi",url:"https://portswigger.net/web-security/sql-injection"},
+  {id:"sql-injection-54",category:"sql-injection",name:"PayloadsAllTheThings SQLi",description:"Foglio riassuntivo completo di payload per bypass WAF e SQL injection",url:"https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SQL%20Injection"},
+  {id:"phishing-social-55",category:"phishing-social",name:"AdvPhishing",description:"Tool per testare la sicurezza contro phishing con bypass 2FA OTP",url:"https://github.com/Ignitetch/AdvPhishing"},
+  {id:"phishing-social-56",category:"phishing-social",name:"Social-Engineer Toolkit (SET)",description:"Framework open-source leader per simulazioni di ingegneria sociale",url:"https://github.com/trustedsec/social-engineer-toolkit"},
+  {id:"phishing-social-57",category:"phishing-social",name:"SocialFish",description:"Strumento educativo per analisi phishing e cattura credenziali web",url:"https://github.com/UndeadSec/SocialFish"},
+  {id:"phishing-social-58",category:"phishing-social",name:"HiddenEye",description:"Framework moderno di phishing con funzioni di keylogger e geolocalizzazione",url:"https://github.com/DarkSecDevelopers/HiddenEye"},
+  {id:"phishing-social-59",category:"phishing-social",name:"Evilginx3",description:"Framework proxy MITM avanzato per intercettare cookie di sessione e 2FA",url:"https://github.com/kgretzky/evilginx2"},
+  {id:"phishing-social-60",category:"phishing-social",name:"SayCheese",description:"Dimostrazione di cattura immagini webcam tramite link di ingegneria sociale",url:"https://github.com/hangetzzu/saycheese"},
+  {id:"phishing-social-61",category:"phishing-social",name:"QRGen (Furto codici QR)",description:"Generatore di codici QR malevoli per test di quishing",url:"https://github.com/h0nus/QRGen"},
+  {id:"phishing-social-62",category:"phishing-social",name:"QRLJacking",description:"Framework per dimostrare il dirottamento di sessioni tramite login QR",url:"https://github.com/OWASP/QRLJacking"},
+  {id:"phishing-social-63",category:"phishing-social",name:"MaskPhish",description:"Script per mascherare URL sospetti dietro domini legittimi",url:"https://github.com/jaykali/maskphish"},
+  {id:"phishing-social-64",category:"phishing-social",name:"dnstwist",description:"Rileva typosquatting, domini simili e minacce di phishing sul tuo brand",url:"https://github.com/elceef/dnstwist"},
+  {id:"phishing-social-65",category:"phishing-social",name:"GoPhish",description:"Piattaforma open-source professionale per campagne di simulazione phishing",url:"https://getgophish.com"},
+  {id:"phishing-social-66",category:"phishing-social",name:"Documentazione GoPhish",description:"Manuale ufficiale per configurare e gestire test di awareness con GoPhish",url:"https://docs.getgophish.com"},
+  {id:"phishing-social-67",category:"phishing-social",name:"MITRE ATT&CK Phishing (T1566)",description:"Tassonomia ufficiale e difese contro le tecniche di phishing",url:"https://attack.mitre.org/techniques/T1566/"},
+  {id:"web-attacks-68",category:"web-attacks",name:"Skipfish",description:"Strumento attivo di ricognizione e scansione sicurezza applicazioni web",url:"https://github.com/spinkham/skipfish"},
+  {id:"web-attacks-69",category:"web-attacks",name:"Sublist3r (Ricerca sottodomini)",description:"Enumerazione rapida di sottodomini tramite motori di ricerca",url:"https://github.com/aboul3la/Sublist3r"},
+  {id:"web-attacks-70",category:"web-attacks",name:"Subjack (Subdomain Takeover)",description:"Verifica vulnerabilità di acquisizione sottodomini non configurati",url:"https://github.com/haccer/subjack"},
+  {id:"web-attacks-71",category:"web-attacks",name:"Dirb",description:"Scanner di contenuti web basato su dizionario per trovare file nascosti",url:"https://dirb.sourceforge.net"},
+  {id:"web-attacks-72",category:"web-attacks",name:"Nuclei",description:"Scanner di vulnerabilità veloce e personalizzabile basato su template YAML",url:"https://github.com/projectdiscovery/nuclei"},
+  {id:"web-attacks-73",category:"web-attacks",name:"ffuf (Fuzz Faster U Fool)",description:"Web fuzzer ultra-veloce scritto in Go per directory e parametri",url:"https://github.com/ffuf/ffuf"},
+  {id:"web-attacks-74",category:"web-attacks",name:"Feroxbuster",description:"Strumento veloce e ricorsivo per il content discovery forzato scritto in Rust",url:"https://github.com/epi052/feroxbuster"},
+  {id:"web-attacks-75",category:"web-attacks",name:"Nikto",description:"Scanner classico di server web per file pericolosi e software obsoleti",url:"https://github.com/sullo/nikto"},
+  {id:"web-attacks-76",category:"web-attacks",name:"wafw00f",description:"Identifica e rileva i Web Application Firewall (WAF) che proteggono un sito",url:"https://github.com/EnableSecurity/wafw00f"},
+  {id:"web-attacks-77",category:"web-attacks",name:"Katana",description:"Framework di web crawling di nuova generazione per analisi endpoint",url:"https://github.com/projectdiscovery/katana"},
+  {id:"web-attacks-78",category:"web-attacks",name:"Gobuster",description:"Brute-forcer veloce per directory, file, sottodomini DNS e virtual host",url:"https://github.com/OJ/gobuster"},
+  {id:"web-attacks-79",category:"web-attacks",name:"Dirsearch",description:"Strumento avanzato da riga di comando per bruteforce di percorsi web",url:"https://github.com/maurosoria/dirsearch"},
+  {id:"web-attacks-80",category:"web-attacks",name:"OWASP ZAP",description:"Lo scanner di vulnerabilità per applicazioni web open-source più usato",url:"https://www.zaproxy.org"},
+  {id:"web-attacks-81",category:"web-attacks",name:"testssl.sh",description:"Strumento CLI per verificare cifrari TLS/SSL e vulnerabilità dei certificati",url:"https://testssl.sh"},
+  {id:"web-attacks-82",category:"web-attacks",name:"Arjun",description:"Suite per la scoperta di parametri HTTP nascosti negli endpoint web",url:"https://github.com/s0md3v/Arjun"},
+  {id:"web-attacks-83",category:"web-attacks",name:"Caido",description:"Toolkit moderno e leggero per l'auditing di sicurezza web e proxy HTTP",url:"https://caido.io"},
+  {id:"web-attacks-84",category:"web-attacks",name:"mitmproxy",description:"Proxy HTTPS interattivo per ispezionare e modificare il traffico web",url:"https://mitmproxy.org"},
+  {id:"web-attacks-85",category:"web-attacks",name:"WhatWeb",description:"Web scanner di nuova generazione per identificare CMS, server e librerie",url:"https://github.com/urbanadventurer/WhatWeb"},
+  {id:"web-attacks-86",category:"web-attacks",name:"WPScan",description:"Scanner di sicurezza dedicato per individuare vulnerabilità su WordPress",url:"https://wpscan.com"},
+  {id:"web-attacks-87",category:"web-attacks",name:"PortSwigger Web Security Academy",description:"Piattaforma gratuita di formazione sulle vulnerabilità web",url:"https://portswigger.net/web-security"},
+  {id:"web-attacks-88",category:"web-attacks",name:"PayloadsAllTheThings Web",description:"Elenco completo di payload e bypass per sicurezza web",url:"https://github.com/swisskyrepo/PayloadsAllTheThings"},
+  {id:"web-attacks-89",category:"web-attacks",name:"HackTricks",description:"La wiki definitiva con metodologie, trucchi e comandi per pentester",url:"https://book.hacktricks.xyz"},
+  {id:"post-exploitation-90",category:"post-exploitation",name:"pwncat-cs",description:"Gestore avanzato di reverse shell con automazione post-exploitation",url:"https://github.com/calebstewart/pwncat"},
+  {id:"post-exploitation-91",category:"post-exploitation",name:"Sliver",description:"Framework C2 (Command & Control) open-source multipiattaforma in Go",url:"https://github.com/BishopFox/sliver"},
+  {id:"post-exploitation-92",category:"post-exploitation",name:"PEASS-ng (LinPEAS/WinPEAS)",description:"Suite per trovare percorsi di privilege escalation su Linux e Windows",url:"https://github.com/peass-ng/PEASS-ng"},
+  {id:"post-exploitation-93",category:"post-exploitation",name:"Ligolo-ng",description:"Strumento avanzato per tunneling e pivoting di rete tramite interfacce TUN",url:"https://github.com/nicocha30/ligolo-ng"},
+  {id:"post-exploitation-94",category:"post-exploitation",name:"Chisel",description:"Tunnel TCP/UDP veloce trasportato su HTTP e protetto tramite SSH",url:"https://github.com/jpillora/chisel"},
+  {id:"post-exploitation-95",category:"post-exploitation",name:"Evil-WinRM",description:"Shell remota Windows per pentesting su ambienti Active Directory",url:"https://github.com/Hackplayers/evil-winrm"},
+  {id:"post-exploitation-96",category:"post-exploitation",name:"Mythic",description:"Piattaforma C2 collaborativa e modulare per operazioni Red Team",url:"https://github.com/its-a-feature/Mythic"},
+  {id:"post-exploitation-97",category:"post-exploitation",name:"pspy",description:"Monitora i processi Linux in esecuzione senza richiedere permessi di root",url:"https://github.com/DominicBreuker/pspy"},
+  {id:"post-exploitation-98",category:"post-exploitation",name:"linux-smart-enumeration",description:"Script shell per enumerare informazioni utili alla privilege escalation",url:"https://github.com/diego-treitos/linux-smart-enumeration"},
+  {id:"post-exploitation-99",category:"post-exploitation",name:"LaZagne",description:"Recupera password salvate localmente in browser, Wi-Fi e software",url:"https://github.com/AlessandroZ/LaZagne"},
+  {id:"post-exploitation-100",category:"post-exploitation",name:"HackTricks PrivEsc Playbook",description:"Guide dettagliate per l'escalation dei privilegi su Linux e Windows",url:"https://book.hacktricks.xyz/linux-hardening/privilege-escalation"},
+  {id:"post-exploitation-101",category:"post-exploitation",name:"LOLBAS",description:"Binari nativi Windows utilizzabili per operazioni post-sfruttamento",url:"https://lolbas-project.github.io"},
+  {id:"post-exploitation-102",category:"post-exploitation",name:"revshells.com",description:"Generatore online istantaneo di reverse shell in decine di linguaggi",url:"https://www.revshells.com"},
+  {id:"post-exploitation-103",category:"post-exploitation",name:"PayloadsAllTheThings Post-Ex",description:"Schede riassuntive su pivoting, persistenza e dumping credenziali",url:"https://github.com/swisskyrepo/PayloadsAllTheThings"},
+  {id:"post-exploitation-104",category:"post-exploitation",name:"Mimikatz",description:"Strumento di riferimento per l'estrazione di credenziali dalla memoria Windows",url:"https://github.com/gentilkiwi/mimikatz"},
+  {id:"payload-creation-105",category:"payload-creation",name:"TheFatRat",description:"Strumento per generare payload e backdoor compilati per diverse piattaforme",url:"https://github.com/screetsec/TheFatRat"},
+  {id:"payload-creation-106",category:"payload-creation",name:"Stitch",description:"Framework RAT open-source multipiattaforma scritto in Python",url:"https://github.com/nathanlopez/Stitch"},
+  {id:"payload-creation-107",category:"payload-creation",name:"Venom Shellcode Generator",description:"Generatore automatizzato di shellcode e payload con Metasploit",url:"https://github.com/r00t-3xp10it/venom"},
+  {id:"payload-creation-108",category:"payload-creation",name:"Mob-Droid",description:"Generatore di payload per auditing di sicurezza su dispositivi Android",url:"https://github.com/kinghacker0/Mob-Droid"},
+  {id:"payload-creation-109",category:"payload-creation",name:"msfvenom",description:"Generatore ed encoder standard di payload della suite Metasploit",url:"https://docs.metasploit.com/docs/using-metasploit/basics/how-to-use-msfvenom.html"},
+  {id:"payload-creation-110",category:"payload-creation",name:"LOLBAS Project",description:"Documentazione dei binari firmati Microsoft sfruttabili per esecuzione",url:"https://lolbas-project.github.io"},
+  {id:"exploit-frameworks-111",category:"exploit-frameworks",name:"RouterSploit",description:"Framework di exploitation dedicato a router, telecamere e dispositivi IoT",url:"https://github.com/threat9/routersploit"},
+  {id:"exploit-frameworks-112",category:"exploit-frameworks",name:"Commix",description:"Strumento automatizzato per rilevare e sfruttare Command Injection",url:"https://github.com/commixproject/commix"},
+  {id:"exploit-frameworks-113",category:"exploit-frameworks",name:"Metasploit Framework",description:"Il framework di penetration testing ed exploitation più famoso al mondo",url:"https://www.metasploit.com"},
+  {id:"exploit-frameworks-114",category:"exploit-frameworks",name:"SearchSploit",description:"Strumento da riga di comando per cercare exploit offline nel database Exploit-DB",url:"https://gitlab.com/exploit-database/exploitdb"},
+  {id:"exploit-frameworks-115",category:"exploit-frameworks",name:"Exploit-DB",description:"Archivio online ufficiale di exploit pubblici e vulnerabilità documentate",url:"https://www.exploit-db.com"},
+  {id:"exploit-frameworks-116",category:"exploit-frameworks",name:"Metasploit Unleashed",description:"Corso gratuito completo per imparare ad usare Metasploit da zero",url:"https://www.offsec.com/metasploit-unleashed/"},
+  {id:"reverse-eng-full-117",category:"reverse-eng-full",name:"Androguard",description:"Strumento Python per il reverse engineering e l'analisi di file APK Android",url:"https://github.com/androguard/androguard"},
+  {id:"reverse-eng-full-118",category:"reverse-eng-full",name:"Apk2Gold",description:"Decompilatore per convertire applicazioni Android APK in codice Java",url:"https://github.com/lxdvs/apk2gold"},
+  {id:"reverse-eng-full-119",category:"reverse-eng-full",name:"JADX",description:"Decompilatore Dex-to-Java con interfaccia grafica per ispezionare APK",url:"https://github.com/skylot/jadx"},
+  {id:"reverse-eng-full-120",category:"reverse-eng-full",name:"Ghidra (NSA)",description:"Framework completo di reverse engineering e decompilazione sviluppato dalla NSA",url:"https://ghidra-sre.org"},
+  {id:"reverse-eng-full-121",category:"reverse-eng-full",name:"Radare2",description:"Framework UNIX-like da riga di comando per analisi binaria e disassembly",url:"https://rada.re"},
+  {id:"reverse-eng-full-122",category:"reverse-eng-full",name:"Apktool",description:"Decodifica e ricostruisce risorse e codice smali di pacchetti APK",url:"https://apktool.org"},
+  {id:"reverse-eng-full-123",category:"reverse-eng-full",name:"GDB (GNU Debugger)",description:"Il debugger standard per analizzare l'esecuzione di programmi su Linux",url:"https://www.sourceware.org/gdb/"},
+  {id:"reverse-eng-full-124",category:"reverse-eng-full",name:"GNU Binutils",description:"Raccolta di strumenti binari essenziali (strings, objdump, readelf)",url:"https://www.gnu.org/software/binutils/"},
+  {id:"reverse-eng-full-125",category:"reverse-eng-full",name:"crackmes.one",description:"Piattaforma con sfide praticabili per allenarsi nel reverse engineering",url:"https://crackmes.one"},
+  {id:"reverse-eng-full-126",category:"reverse-eng-full",name:"Malware Unicorn RE101",description:"Workshop gratuito passo-passo per imparare reverse engineering e malware analysis",url:"https://malwareunicorn.org/workshops/re101.html"},
+  {id:"ai-cybersecurity-127",category:"ai-cybersecurity",name:"Uncensored AI",description:"Assistente AI senza restrizioni per analisi libera, ricerca tecnica e test",url:"https://uncensored.ai"},
+  {id:"ai-cybersecurity-128",category:"ai-cybersecurity",name:"PentestGPT",description:"Agente AI open-source guidato da LLM per penetration testing",url:"https://github.com/GreyDoff/PentestGPT"},
+  {id:"ai-cybersecurity-129",category:"ai-cybersecurity",name:"OWASP ZAP AI",description:"Scanner di sicurezza web open-source con integrazione AI",url:"https://www.zaproxy.org"},
+  {id:"ai-cybersecurity-130",category:"ai-cybersecurity",name:"Nuclei Vulnerability Scanner",description:"Scanner di vulnerabilità open-source basato su template community",url:"https://projectdiscovery.io"},
+  {id:"ai-cybersecurity-131",category:"ai-cybersecurity",name:"Cylect.io",description:"Motore di ricerca OSINT gratuito potenziato dall'IA",url:"https://cylect.io"},
+  {id:"ai-cybersecurity-132",category:"ai-cybersecurity",name:"HackTricks Knowledge-Base",description:"La guida completa e gratuita a tutte le tecniche di hacking etico",url:"https://book.hacktricks.xyz"},
+  {id:"ai-cybersecurity-133",category:"ai-cybersecurity",name:"SecLists Repository",description:"Raccolta gratuita e open-source di payload, username e parole chiave",url:"https://github.com/danielmiessler/SecLists"},
+  {id:"ai-cybersecurity-134",category:"ai-cybersecurity",name:"LocalAI Pentest",description:"Integrazione locale con modelli open-source senza abbonamenti",url:"https://localai.io"},
+  {id:"privacy-security-135",category:"privacy-security",name:"PrivNote.com",description:"Messaggi cifrati ad autodistruzione automatica dopo la lettura",url:"https://privnote.com"},
+  {id:"privacy-security-136",category:"privacy-security",name:"Quackr",description:"SMS e numeri di telefono temporanei completamente gratuiti",url:"https://quackr.io"},
+  {id:"privacy-security-137",category:"privacy-security",name:"SimpleLogin",description:"Alias email gratuiti per proteggere la propria casella dallo spam",url:"https://simplelogin.io"},
+  {id:"privacy-security-138",category:"privacy-security",name:"Bitwarden",description:"Gestore di password open-source e 100% gratuito per uso personale",url:"https://bitwarden.com"},
+  {id:"privacy-security-139",category:"privacy-security",name:"Proton Pass Free",description:"Gestore password cifrato e alias email gratuiti",url:"https://proton.me/pass"},
+  {id:"media-downloader-140",category:"media-downloader",name:"Cobalt.tools",description:"Downloader open-source e senza pubblicità per video TikTok, IG e YouTube",url:"https://cobalt.tools"},
+  {id:"media-downloader-141",category:"media-downloader",name:"TV.garden",description:"Canali TV in diretta streaming gratuita da tutto il mondo su mappa interattiva",url:"https://tv.garden"},
+  {id:"media-downloader-142",category:"media-downloader",name:"yt-dlp",description:"Il miglior strumento CLI open-source per scaricare qualsiasi video/audio",url:"https://github.com/yt-dlp/yt-dlp"},
+  {id:"media-downloader-143",category:"media-downloader",name:"MovieBox",description:"Piattaforma gratuita per esplorare film e contenuti multimediali",url:"https://moviebox.app"},
+  {id:"media-editing-144",category:"media-editing",name:"Photopea",description:"Editor grafico completo gratuito via browser (alternativa a Photoshop)",url:"https://www.photopea.com"},
+  {id:"media-editing-145",category:"media-editing",name:"Photext.shop",description:"Modifica il testo in immagini e screenshot direttamente online gratis",url:"https://photext.shop"},
+  {id:"media-editing-146",category:"media-editing",name:"GIMP",description:"Editor di immagini professionale open-source e gratuito per desktop",url:"https://www.gimp.org"},
+  {id:"media-editing-147",category:"media-editing",name:"Remove.bg",description:"Rimuovi lo sfondo da qualsiasi immagine in un secondo",url:"https://www.remove.bg"},
+  {id:"fun-utility-148",category:"fun-utility",name:"FakeUpdate.net",description:"Falsi aggiornamenti OS realistici per simulate pause di lavoro",url:"https://fakeupdate.net"},
+  {id:"fun-utility-149",category:"fun-utility",name:"Hacker Typer",description:"Simulatore di riga di comando hacker da schermo",url:"https://hackertyper.com"},
+  {id:"fun-utility-150",category:"fun-utility",name:"Window Swap",description:"Guarda dalle finestre di sconosciuti in giro per il mondo in streaming",url:"https://www.window-swap.com"},
+  {id:"fun-utility-151",category:"fun-utility",name:"Sobrief",description:"Riassunti audio gratuiti di libri ed estratti utili",url:"https://sobrief.com"},
+  {id:"ai-websites-152",category:"ai-websites",name:"Base44",description:"Crea applicazioni web e siti completi con database e autenticazione tramite AI",url:"https://base44.com"},
+  {id:"ai-websites-153",category:"ai-websites",name:"Lovable (ex GPT Engineer)",description:"Genera applicazioni web full-stack e interfacce moderne partendo da un prompt",url:"https://lovable.dev"},
+  {id:"ai-websites-154",category:"ai-websites",name:"Bolt.new",description:"Crea ed esegui app web full-stack direttamente nel browser",url:"https://bolt.new"},
+  {id:"ai-websites-155",category:"ai-websites",name:"v0.dev by Vercel",description:"Generatore di componenti UI React/Tailwind gratuito",url:"https://v0.dev"},
+  {id:"ai-websites-156",category:"ai-websites",name:"Replit Agent",description:"Crea, modifica e pubblica siti web e app full-stack con l'agente AI di Replit",url:"https://replit.com"},
+  {id:"ai-websites-157",category:"ai-websites",name:"Framer AI",description:"Genera e pubblica siti web moderni e animati partendo da una descrizione testuale",url:"https://www.framer.com"},
+  {id:"ai-websites-158",category:"ai-websites",name:"Durable AI Website Builder",description:"Crea un sito web aziendale completo con testi e immagini in 30 secondi",url:"https://durable.co"},
+  {id:"ai-websites-159",category:"ai-websites",name:"10Web AI Website Builder",description:"Genera e ospita siti WordPress completi tramite intelligenza artificiale",url:"https://10web.io"},
+  {id:"ai-websites-160",category:"ai-websites",name:"Dora AI",description:"Genera siti web 3D interattivi e animati direttamente da prompt testuali",url:"https://www.dora.run"},
+  {id:"ai-websites-161",category:"ai-websites",name:"Relume AI",description:"Genera sitemap, wireframe e componenti web completi per Figma e Webflow con l'AI",url:"https://www.relume.io"},
+  {id:"ai-websites-162",category:"ai-websites",name:"Websim.ai",description:"Crea e simula siti web, web app e giochi interattivi istantaneamente da prompt",url:"https://websim.ai"},
+  {id:"ai-websites-163",category:"ai-websites",name:"Same.new",description:"Clona e genera interfacce web e siti completi tramite prompt AI nel browser",url:"https://same.new"},
+  {id:"ai-websites-164",category:"ai-websites",name:"Firebase Studio (Project IDX)",description:"Ambiente di sviluppo cloud AI di Google per creare e deployare web app",url:"https://firebase.studio"},
+  {id:"ai-websites-165",category:"ai-websites",name:"GitHub Pages",description:"Hosting web statico completamente gratuito offerto da GitHub",url:"https://pages.github.com"},
+  {id:"ai-websites-166",category:"ai-websites",name:"Netlify Free",description:"Pubblica siti web e web-app statiche a costo zero",url:"https://www.netlify.com"},
+  {id:"ai-presentations-167",category:"ai-presentations",name:"Gamma App",description:"Genera presentazioni visive con crediti gratuiti all'iscrizione",url:"https://gamma.app"},
+  {id:"ai-presentations-168",category:"ai-presentations",name:"Excalidraw",description:"Lavagna visiva open-source e gratuita per schemi e diagrammi",url:"https://excalidraw.com"},
+  {id:"ai-presentations-169",category:"ai-presentations",name:"Draw.io",description:"Piattaforma gratuita e open-source per diagrammi di rete e diapositive",url:"https://app.diagrams.net"},
+  {id:"sysadmin-remote-170",category:"sysadmin-remote",name:"RustDesk",description:"Alternativa open-source a TeamViewer e AnyDesk per controllo remoto",url:"https://rustdesk.com"},
+  {id:"sysadmin-remote-171",category:"sysadmin-remote",name:"Sysinternals Suite",description:"Suite di utility di diagnostica Microsoft completamente gratuita",url:"https://learn.microsoft.com/en-us/sysinternals/"},
+  {id:"sysadmin-remote-172",category:"sysadmin-remote",name:"Ventoy",description:"Crea USB multi-boot trascinando semplicemente i file ISO",url:"https://www.ventoy.net"},
+  {id:"sysadmin-remote-173",category:"sysadmin-remote",name:"Rufus",description:"Formattazione e creazione chiavette USB avviabili open-source",url:"https://rufus.ie"},
+  {id:"sysadmin-remote-174",category:"sysadmin-remote",name:"MobaXterm Home",description:"Terminal SSH, RDP, VNC e X11 gratuito per uso personale",url:"https://mobaxterm.mobatek.net"},
+  {id:"sysadmin-remote-175",category:"sysadmin-remote",name:"PuTTY",description:"Storico client SSH e Telnet open-source e gratuito",url:"https://www.putty.org"},
+  {id:"backup-recovery-176",category:"backup-recovery",name:"Clonezilla",description:"Software open-source per clonazione e bare-metal backup di dischi",url:"https://clonezilla.org"},
+  {id:"backup-recovery-177",category:"backup-recovery",name:"TestDisk & PhotoRec",description:"Strumenti open-source per il recupero dati e partizioni corrotte",url:"https://www.cgsecurity.org"},
+  {id:"backup-recovery-178",category:"backup-recovery",name:"Recuva Free",description:"Recupera file cancellati accidentalmente da schede e USB",url:"https://www.ccleaner.com/recuva"},
+  {id:"automation-scripting-179",category:"automation-scripting",name:"Agent-QA",description:"Framework e suite AI open-source per l'automazione dei test QA e degli script di collaudo",url:"https://github.com/agent-qa/agent-qa"},
+  {id:"automation-scripting-180",category:"automation-scripting",name:"AutoHotkey",description:"Linguaggio di scripting open-source per automatizzare Windows",url:"https://www.autohotkey.com"},
+  {id:"automation-scripting-181",category:"automation-scripting",name:"n8n.io (Self-Hosted)",description:"Automazione dei workflow open-source ed eseguibile gratis",url:"https://n8n.io"},
+  {id:"automation-scripting-182",category:"automation-scripting",name:"PowerShell Gallery",description:"Repository gratuito di script e moduli PowerShell ufficiali",url:"https://www.powershellgallery.com"},
+  {id:"automation-scripting-183",category:"automation-scripting",name:"UniGetUI",description:"Interfaccia grafica open-source per i package manager di Windows",url:"https://www.marticliment.com/unigetui/"},
+  {id:"informatica-184",category:"informatica",name:"W3Schools",description:"Tutorial ed esempi gratuiti su tutte le tecnologie web",url:"https://www.w3schools.com"},
+  {id:"informatica-185",category:"informatica",name:"GeeksforGeeks",description:"Articoli tecnici e guide di informatica completamente gratuite",url:"https://www.geeksforgeeks.org"},
+  {id:"informatica-186",category:"informatica",name:"freeCodeCamp",description:"Corsi gratuiti con certificazioni di programmazione",url:"https://www.freecodecamp.org"},
+  {id:"informatica-187",category:"informatica",name:"HTML.it",description:"Portale italiano di riferimento per lo sviluppo web e guide IT",url:"https://www.html.it"},
+  {id:"programmazione-188",category:"programmazione",name:"Stack Overflow",description:"La community gratuita di domande e risposte per sviluppatori",url:"https://stackoverflow.com"},
+  {id:"programmazione-189",category:"programmazione",name:"GitHub",description:"Piattaforma aperta per l'hosting e il versionamento del codice",url:"https://github.com"},
+  {id:"programmazione-190",category:"programmazione",name:"Roadmap.sh",description:"Mappe di apprendimento open-source per carriere IT",url:"https://roadmap.sh"},
+  {id:"programmazione-191",category:"programmazione",name:"LeetCode",description:"Esercizi gratuiti di algoritmi e strutture dati per interviste",url:"https://leetcode.com"},
+  {id:"programmazione-192",category:"programmazione",name:"Codewars",description:"Allenati risolvendo kata di programmazione gratuiti",url:"https://www.codewars.com"},
+  {id:"webdev-193",category:"webdev",name:"MDN Web Docs",description:"La documentazione ufficiale e completa per HTML, CSS e JavaScript",url:"https://developer.mozilla.org"},
+  {id:"webdev-194",category:"webdev",name:"CSS-Tricks",description:"Guide, articoli e trucchi avanzati per il layout con CSS",url:"https://css-tricks.com"},
+  {id:"webdev-195",category:"webdev",name:"Can I Use",description:"Verifica gratuita della compatibilità delle feature web sui browser",url:"https://caniuse.com"},
+  {id:"webdev-196",category:"webdev",name:"CodePen",description:"Editor online per HTML, CSS e JS con anteprima live ed esempi",url:"https://codepen.io"},
+  {id:"python-197",category:"python",name:"Python.org Official",description:"Documentazione ufficiale del linguaggio Python e download gratuiti",url:"https://www.python.org"},
+  {id:"python-198",category:"python",name:"Real Python Free Guides",description:"Tutorial gratuiti approfonditi e best practice in Python",url:"https://realpython.com"},
+  {id:"python-199",category:"python",name:"PyPI",description:"Python Package Index, l'indice ufficiale dei pacchetti open-source",url:"https://pypi.org"},
+  {id:"python-200",category:"python",name:"Automate the Boring Stuff",description:"Libro gratuito per automatizzare compiti quotidiani con Python",url:"https://automatetheboringstuff.com"},
+  {id:"java-201",category:"java",name:"Oracle Java Docs",description:"Documentazione ufficiale del JDK e del linguaggio Java",url:"https://docs.oracle.com/en/java/"},
+  {id:"java-202",category:"java",name:"Baeldung",description:"Guida e tutorial gratuiti sul mondo Java, Spring e backend",url:"https://www.baeldung.com"},
+  {id:"java-203",category:"java",name:"Spring Initializr",description:"Generatore gratuito per configurare progetti Spring Boot istantaneamente",url:"https://start.spring.io"},
+  {id:"java-204",category:"java",name:"Java Design Patterns",description:"Raccolta open-source di design pattern implementati in Java",url:"https://java-design-patterns.com"},
+  {id:"csharp-205",category:"csharp",name:"Microsoft .NET Docs",description:"Documentazione e guide ufficiali Microsoft completamente gratuite per C#",url:"https://learn.microsoft.com/en-us/dotnet/"},
+  {id:"csharp-206",category:"csharp",name:"NuGet Gallery",description:"Repository gestore pacchetti ufficiale per la community .NET",url:"https://www.nuget.org"},
+  {id:"csharp-207",category:"csharp",name:"DotNetFiddle",description:"Scrivi, compila ed esegui codice C# direttamente nel browser gratis",url:"https://dotnetfiddle.net"},
+  {id:"csharp-208",category:"csharp",name:"C# Station",description:"Tutorial gratuiti per principianti ed esperti sul linguaggio C#",url:"https://csharp-station.com"},
+  {id:"linux-209",category:"linux",name:"Arch Wiki",description:"La documentazione Linux più dettagliata e completamente gratuita",url:"https://wiki.archlinux.org"},
+  {id:"linux-210",category:"linux",name:"Kali Linux",description:"Distribuzione open-source per pentesting e sicurezza",url:"https://www.kali.org"},
+  {id:"linux-211",category:"linux",name:"ExplainShell",description:"Spiega gratis la sintassi e le flag di qualsiasi comando bash/shell",url:"https://explainshell.com"},
+  {id:"linux-212",category:"linux",name:"LinuxCommand.org",description:"Corso gratuito da riga di comando per imparare il terminale Linux",url:"https://linuxcommand.org"},
+  {id:"windows-213",category:"windows",name:"Sysinternals Suite",description:"Suite di utility di diagnosi ufficiali Microsoft a costo zero",url:"https://learn.microsoft.com/en-us/sysinternals/"},
+  {id:"windows-214",category:"windows",name:"NirSoft",description:"Raccolta completa di utility gratuite per analisi e diagnostica Windows",url:"https://www.nirsoft.net"},
+  {id:"windows-215",category:"windows",name:"WizTree",description:"L'analizzatore di spazio disco gratuito e ultra-veloce per Windows",url:"https://diskanalyzer.com"},
+  {id:"windows-216",category:"windows",name:"Chris Titus Tech Windows Utility",description:"Script open-source per debloat e ottimizzazione rapida di Windows",url:"https://christitus.com/windows-tool/"},
+  {id:"networking-217",category:"networking",name:"Wireshark",description:"Il miglior analizzatore di pacchetti e traffico di rete open-source",url:"https://www.wireshark.org"},
+  {id:"networking-218",category:"networking",name:"Nmap Official",description:"Scanner di porte e di rete open-source e gratuito",url:"https://nmap.org"},
+  {id:"networking-219",category:"networking",name:"Angry IP Scanner",description:"Port scanner e scanner IP di rete veloce e open-source",url:"https://angryip.org"},
+  {id:"networking-220",category:"networking",name:"Subnet Calculator",description:"Calcolatore gratuito di subnet IPv4 ed IPv6 per sistemisti di rete",url:"https://www.subnet-calculator.com"},
+  {id:"dns-221",category:"dns",name:"DNS Checker",description:"Verifica la propagazione DNS globale in tempo reale su molteplici server",url:"https://dnschecker.org"},
+  {id:"dns-222",category:"dns",name:"Cloudflare 1.1.1.1",description:"Resolver DNS pubblico ultra-veloce e orientato alla privacy",url:"https://1.1.1.1"},
+  {id:"dns-223",category:"dns",name:"MXToolbox",description:"Diagnostica gratuita per record DNS, server mail MX e verifica blacklist",url:"https://mxtoolbox.com"},
+  {id:"dns-224",category:"dns",name:"DNSViz",description:"Strumento di analisi visiva per la catena di autenticazione DNSSEC",url:"https://dnsviz.net"},
+  {id:"cloud-225",category:"cloud",name:"Vercel Free Tier",description:"Hosting ottimizzato per progetti web frontend e microservizi",url:"https://vercel.com"},
+  {id:"cloud-226",category:"cloud",name:"Netlify",description:"Piattaforma gratuita per l'hosting di siti statici e jamstack",url:"https://www.netlify.com"},
+  {id:"cloud-227",category:"cloud",name:"AWS Free Tier",description:"Piano gratuito Amazon Web Services per imparare l'infrastruttura cloud",url:"https://aws.amazon.com/free/"},
+  {id:"cloud-228",category:"cloud",name:"Oracle Cloud Free Tier",description:"VPS ed istanze cloud con risorse sempre gratuite a vita",url:"https://www.oracle.com/cloud/free/"},
+  {id:"docker-229",category:"docker",name:"Docker Hub",description:"Registro pubblico ufficiale ed open-source di immagini container",url:"https://hub.docker.com"},
+  {id:"docker-230",category:"docker",name:"Portainer Community Edition",description:"Interfaccia grafica open-source per la gestione di container Docker",url:"https://www.portainer.io"},
+  {id:"docker-231",category:"docker",name:"LazyDocker",description:"Interfaccia da terminale veloce ed open-source per gestire Docker",url:"https://github.com/jesseduffield/lazydocker"},
+  {id:"docker-232",category:"docker",name:"Kubernetes Docs",description:"Documentazione ufficiale gratuita per l'orchestrazione di container",url:"https://kubernetes.io/docs/"},
+  {id:"git-233",category:"git",name:"Git Official Docs",description:"Manuale ufficiale e riferimento completo dei comandi Git",url:"https://git-scm.com/doc"},
+  {id:"git-234",category:"git",name:"Learn Git Branching",description:"Visualizzatore ed esercitatore interattivo sui rami Git gratis",url:"https://learngitbranching.js.org"},
+  {id:"git-235",category:"git",name:"Oh My Git!",description:"Gioco open-source per imparare l'uso di Git in modo divertente",url:"https://ohmygit.org"},
+  {id:"git-236",category:"git",name:"GitKraken Free",description:"Client grafico Git intuitivo per sviluppatori",url:"https://www.gitkraken.com"},
+  {id:"api-237",category:"api",name:"Postman Free",description:"Piattaforma per costruire, collaudare e documentare API",url:"https://www.postman.com"},
+  {id:"api-238",category:"api",name:"Hoppscotch",description:"Alternativa open-source e ultra-leggera a Postman direttamente via browser",url:"https://hoppscotch.io"},
+  {id:"api-239",category:"api",name:"Insomnia Core",description:"Client REST e GraphQL open-source elegante per testare le API",url:"https://insomnia.rest"},
+  {id:"api-240",category:"api",name:"JSONPath Finder",description:"Trova il percorso esatto di qualsiasi elemento nei file JSON",url:"https://jsonpathfinder.com"},
+  {id:"database-241",category:"database",name:"DBeaver Community",description:"Client database universale ed open-source per SQL e NoSQL",url:"https://dbeaver.io"},
+  {id:"database-242",category:"database",name:"PostgreSQL Official",description:"Il database relazionale open-source più avanzato al mondo",url:"https://www.postgresql.org"},
+  {id:"database-243",category:"database",name:"Supabase Free",description:"Alternativa open-source a Firebase basata su PostgreSQL",url:"https://supabase.com"},
+  {id:"database-244",category:"database",name:"Beekeeper Studio",description:"Editor e gestore SQL open-source con interfaccia moderna",url:"https://www.beekeeperstudio.io"},
+  {id:"devops-245",category:"devops",name:"Ansible Docs",description:"Guida ufficiale all'automazione ed alla gestione delle configurazioni",url:"https://docs.ansible.com"},
+  {id:"devops-246",category:"devops",name:"Terraform Registry",description:"Provider e moduli open-source per l'Infrastructure as Code",url:"https://registry.terraform.io"},
+  {id:"devops-247",category:"devops",name:"GitHub Actions",description:"Automazione CI/CD gratuita integrata per i repository pubblici",url:"https://github.com/features/actions"},
+  {id:"devops-248",category:"devops",name:"GitLab CI/CD Docs",description:"Documentazione gratuita per pipeline di build e deployment",url:"https://docs.gitlab.com/ee/ci/"},
+  {id:"cybersecurity-249",category:"cybersecurity",name:"OWASP Top 10",description:"Standard aperto sulle vulnerabilità web più critiche",url:"https://owasp.org"},
+  {id:"cybersecurity-250",category:"cybersecurity",name:"Have I Been Pwned",description:"Verifica se la tua e-mail è finita in data breach conosciuti",url:"https://haveibeenpwned.com"},
+  {id:"cybersecurity-251",category:"cybersecurity",name:"CISA Known Exploited",description:"Catalogo ufficiale delle vulnerabilità attivamente sfruttate",url:"https://www.cisa.gov/known-exploited-vulnerabilities-catalog"},
+  {id:"cybersecurity-252",category:"cybersecurity",name:"PrivSec.dev",description:"Guide pratiche e risorse per rafforzare la sicurezza digitale",url:"https://privsec.dev"},
+  {id:"pentesting-253",category:"pentesting",name:"PayloadsAllTheThings",description:"Repository open-source con cheat sheet e payload per pentesting",url:"https://github.com/swisskyrepo/PayloadsAllTheThings"},
+  {id:"pentesting-254",category:"pentesting",name:"GTFOBins",description:"Lista di comandi per la privilege escalation su Unix/Linux",url:"https://gtfobins.github.io"},
+  {id:"pentesting-255",category:"pentesting",name:"PortSwigger Web Security",description:"Laboratori gratuiti sulle vulnerabilità web creati da Burp Suite",url:"https://portswigger.net/web-security"},
+  {id:"pentesting-256",category:"pentesting",name:"TryHackMe Free",description:"Percorsi di apprendimento gratuiti per iniziare con l'hacking etico",url:"https://tryhackme.com"},
+  {id:"osint-257",category:"osint",name:"IntelBase",description:"Piattaforma OSINT per ricerca di account registrati, dati esposti e tracce digitali tramite email o username",url:"https://intelbase.is"},
+  {id:"osint-258",category:"osint",name:"OSINT Framework",description:"Raccolta strutturata ad albero di tutti i principali strumenti OSINT gratuiti",url:"https://osintframework.com"},
+  {id:"osint-259",category:"osint",name:"Epieos",description:"Footprinting OSINT su indirizzi email e numeri di telefono senza inviare notifiche al target",url:"https://epieos.com"},
+  {id:"osint-260",category:"osint",name:"WhatsMyName Web",description:"Enumerazione istantanea di uno username su centinaia di social network e piattaforme",url:"https://whatsmyname.app"},
+  {id:"osint-261",category:"osint",name:"Namechk",description:"Verifica immediata della disponibilità e registrazione di username e domini su decine di portali",url:"https://namechk.com"},
+  {id:"osint-262",category:"osint",name:"Instant Username Search",description:"Ricerca in tempo reale della presenza di uno username sui principali social",url:"https://instantusername.com"},
+  {id:"osint-263",category:"osint",name:"Sherlock Project",description:"Tool CLI open-source per scansionare la presenza di uno username su oltre 400 siti",url:"https://sherlock-project.github.io"},
+  {id:"osint-264",category:"osint",name:"Maigret OSINT",description:"Raccoglie dossier completi su uno username analizzando oltre 3000 piattaforme",url:"https://github.com/soxoj/maigret"},
+  {id:"osint-265",category:"osint",name:"Holehe",description:"Verifica su oltre 120 siti web se un indirizzo email risulta già registrato",url:"https://github.com/megadose/holehe"},
+  {id:"osint-266",category:"osint",name:"Have I Been Pwned",description:"Controlla se un indirizzo email o una password sono stati esposti in data breach noti",url:"https://haveibeenpwned.com"},
+  {id:"osint-267",category:"osint",name:"DeHashed",description:"Motore di ricerca per l'analisi di database esposti, credenziali leccate e asset aziendali",url:"https://dehashed.com"},
+  {id:"osint-268",category:"osint",name:"IntelX (Intelligence X)",description:"Motore di ricerca archivistico per darknet, leak, paste, domini ed email",url:"https://intelx.io"},
+  {id:"osint-269",category:"osint",name:"BreachDirectory",description:"Database gratuito per verificare la presenza di email e username in data leak",url:"https://breachdirectory.org"},
+  {id:"osint-270",category:"osint",name:"Leak-Lookup",description:"Motore di ricerca per individuare credenziali esposte in violazioni pubbliche",url:"https://leak-lookup.com"},
+  {id:"osint-271",category:"osint",name:"Hunter.io Email Finder",description:"Individua e verifica indirizzi email aziendali associati a uno specifico dominio",url:"https://hunter.io/email-finder"},
+  {id:"osint-272",category:"osint",name:"PhoneInfoga",description:"Framework open-source per intelligence e footprinting su numeri di telefono internazionali",url:"https://github.com/sundowndev/phoneinfoga"},
+  {id:"osint-273",category:"osint",name:"Sync.me",description:"Identificazione chiamante e ricerca inversa per numeri di telefono cellulari e fissi",url:"https://sync.me"},
+  {id:"osint-274",category:"osint",name:"Truecaller Web",description:"Directory globale per identificare numeri di telefono sconosciuti e spam",url:"https://www.truecaller.com"},
+  {id:"osint-275",category:"osint",name:"Shodan",description:"Motore di ricerca per server, webcam, router e dispositivi IoT esposti su Internet",url:"https://www.shodan.io"},
+  {id:"osint-276",category:"osint",name:"Censys Search",description:"Analisi della superficie d'attacco, certificati e host connessi a livello globale",url:"https://search.censys.io"},
+  {id:"osint-277",category:"osint",name:"FOFA Cyberspace Search",description:"Motore di ricerca per asset di rete, banner di servizio e dispositivi esposti",url:"https://en.fofa.info"},
+  {id:"osint-278",category:"osint",name:"ZoomEye",description:"Motore di ricerca cyberspace per mappare dispositivi, porte e tecnologie web",url:"https://www.zoomeye.org"},
+  {id:"osint-279",category:"osint",name:"SecurityTrails",description:"Storico completo di record DNS, cambiamenti IP, WHOIS e sottodomini",url:"https://securitytrails.com"},
+  {id:"osint-280",category:"osint",name:"crt.sh (Certificate Search)",description:"Ricerca nei log pubblici Certificate Transparency per scoprire sottodomini nascosti",url:"https://crt.sh"},
+  {id:"osint-281",category:"osint",name:"ViewDNS.info",description:"Suite completa di strumenti DNS: Reverse IP Lookup, WHOIS History e Port Scan",url:"https://viewdns.info"},
+  {id:"osint-282",category:"osint",name:"ICANN Lookup",description:"Interrogazione ufficiale WHOIS per verificare intestatari, registrar e scadenze domini",url:"https://lookup.icann.org"},
+  {id:"osint-283",category:"osint",name:"Wayback Machine (Archive.org)",description:"Archivio storico del web per visualizzare versioni passate di qualsiasi sito cancellato",url:"https://web.archive.org"},
+  {id:"osint-284",category:"osint",name:"Archive.today",description:"Servizio di archiviazione istantanea per salvare e consultare istantanee di pagine web",url:"https://archive.ph"},
+  {id:"osint-285",category:"osint",name:"TinEye Reverse Image",description:"Motore di ricerca inversa per immagini per trovare l'origine e le modifiche di una foto",url:"https://tineye.com"},
+  {id:"osint-286",category:"osint",name:"Yandex Images",description:"Potente motore di ricerca inversa per volti, luoghi e oggetti nelle fotografie",url:"https://yandex.com/images/"},
+  {id:"osint-287",category:"osint",name:"PimEyes",description:"Motore di riconoscimento facciale per rintracciare la presenza di un volto sul web pubblico",url:"https://pimeyes.com"},
+  {id:"osint-288",category:"osint",name:"FotoForensics",description:"Analisi forense delle immagini (Error Level Analysis) per rilevare fotoritocchi e manipolazioni",url:"https://fotoforensics.com"},
+  {id:"osint-289",category:"osint",name:"Jimpl EXIF Viewer",description:"Visualizzatore online di metadati EXIF nascosti nelle foto (modello fotocamera, GPS, data)",url:"https://jimpl.com"},
+  {id:"osint-290",category:"osint",name:"SunCalc",description:"Calcola posizione del sole e lunghezza delle ombre per geolocalizzare foto e video (GEOINT)",url:"https://www.suncalc.org"},
+  {id:"osint-291",category:"osint",name:"Overpass Turbo",description:"Interrogazione avanzata dei database OpenStreetMap per individuare edifici, strade e POI",url:"https://overpass-turbo.eu"},
+  {id:"osint-292",category:"osint",name:"GeoSpy AI",description:"Strumento AI per stimare la geolocalizzazione geografica partendo dagli indizi visivi di una foto",url:"https://geospy.ai"},
+  {id:"osint-293",category:"osint",name:"Flightradar24",description:"Tracciamento OSINT in tempo reale del traffico aereo civile e privato globale",url:"https://www.flightradar24.com"},
+  {id:"osint-294",category:"osint",name:"ADS-B Exchange",description:"Tracciamento voli non filtrato inclusi velivoli governativi, militari e privati",url:"https://globe.adsbexchange.com"},
+  {id:"osint-295",category:"osint",name:"MarineTraffic",description:"Monitoraggio AIS in tempo reale delle posizioni e rotte delle navi in tutto il mondo",url:"https://www.marinetraffic.com"},
+  {id:"osint-296",category:"osint",name:"Wigle.net",description:"Mappa mondiale collaborativa delle reti Wi-Fi e torri cellulari geolocalizzate",url:"https://wigle.net"},
+  {id:"osint-297",category:"osint",name:"OpenCorporates",description:"Il più grande database aperto al mondo di società, amministratori e registri aziendali",url:"https://opencorporates.com"},
+  {id:"osint-298",category:"osint",name:"Bellingcat Online Toolkit",description:"Raccolta curata dagli investigatori di Bellingcat per verifica fonti, mappe e social",url:"https://bellingcat.gitbook.io/toolkit"},
+  {id:"osint-299",category:"osint",name:"IntelTechniques Search Tools",description:"Strumenti e moduli di ricerca avanzata creati da Michael Bazzell per investigatori",url:"https://inteltechniques.com/tools/"},
+  {id:"osint-300",category:"osint",name:"Social Searcher",description:"Motore di ricerca in tempo reale per menzioni e post pubblici sui social media",url:"https://www.social-searcher.com"},
+  {id:"osint-301",category:"osint",name:"SpiderFoot",description:"Strumento di automazione OSINT che interroga oltre 200 fonti di intelligence",url:"https://github.com/smicallef/spiderfoot"},
+  {id:"osint-302",category:"osint",name:"Maltego",description:"Piattaforma grafica per analisi dei collegamenti (link analysis) tra persone, domini e IP",url:"https://www.maltego.com"},
+  {id:"reverse-303",category:"reverse",name:"Ghidra",description:"Suite di reverse engineering open-source sviluppata dalla NSA",url:"https://ghidra-sre.org"},
+  {id:"reverse-304",category:"reverse",name:"Cutter (Rizin)",description:"Interfaccia grafica moderna per il framework di disassemblaggio Rizin",url:"https://cutter.re"},
+  {id:"reverse-305",category:"reverse",name:"Binary Ninja Free",description:"Versione cloud gratuita per l'analisi visiva del codice binario",url:"https://cloud.binary.ninja"},
+  {id:"malware-306",category:"malware",name:"VirusTotal",description:"Analizza file e link sospetti con decine di motori antivirus gratuiti",url:"https://www.virustotal.com"},
+  {id:"malware-307",category:"malware",name:"ANY.RUN Free",description:"Sandbox interattiva per eseguire e analizzare malware in tempo reale",url:"https://any.run"},
+  {id:"malware-308",category:"malware",name:"Hybrid Analysis",description:"Analizzatore di file malevoli e malware gratuito potenziato da VxCube",url:"https://www.hybrid-analysis.com"},
+  {id:"malware-309",category:"malware",name:"Joe Sandbox Cloud",description:"Analisi dinamica approfondita di malware su Windows, Linux, Android e macOS",url:"https://www.joesandbox.com"},
+  {id:"malware-310",category:"malware",name:"Tria.ge (Hatching)",description:"Sandbox ad alta velocità per analisi automatizzata di sample e URL malevoli",url:"https://tria.ge"},
+  {id:"malware-311",category:"malware",name:"MalwareBazaar (abuse.ch)",description:"Repository aperto per condividere e scaricare sample di malware per ricerca",url:"https://bazaar.abuse.ch"},
+  {id:"malware-312",category:"malware",name:"Cuckoo Sandbox",description:"Sistema open-source leader per l'analisi dinamica automatizzata dei file",url:"https://cuckoosandbox.org"},
+  {id:"malware-313",category:"malware",name:"CAPE Sandbox",description:"Sandbox open-source avanzata per estrazione di payload e configurazioni malware",url:"https://capesandbox.com"},
+  {id:"malware-314",category:"malware",name:"Intezer Analyze",description:"Analisi genetica del codice per identificare famiglie malware e codice riutilizzato",url:"https://analyze.intezer.com"},
+  {id:"malware-315",category:"malware",name:"UnpacMe",description:"Servizio automatizzato di unpacking ed estrazione payload da eseguibili Windows",url:"https://www.unpac.me"},
+  {id:"malware-316",category:"malware",name:"Filescan.IO",description:"Motore di analisi statica ultra-veloce per file, script e link sospetti",url:"https://www.filescan.io"},
+  {id:"malware-317",category:"malware",name:"VMRay Analyzer",description:"Sandbox avanzata agentless per l'analisi comportamentale di minacce evasive",url:"https://www.vmray.com"},
+  {id:"malware-318",category:"malware",name:"Manalyzer",description:"Analizzatore statico gratuito per eseguibili Windows PE (entropia, packer, API)",url:"https://manalyzer.org"},
+  {id:"malware-319",category:"malware",name:"PEStudio",description:"Strumento gratuito indispensabile per ispezionare anomalie nei file eseguibili Windows",url:"https://www.winitor.com"},
+  {id:"malware-320",category:"malware",name:"DIE (Detect It Easy)",description:"Identificatore open-source di packer, compilatori e protezioni nei file binari",url:"https://github.com/horsicq/Detect-It-Easy"},
+  {id:"threatintel-321",category:"threatintel",name:"AlienVault OTX",description:"La più grande community aperta per scambiare indicatori di compromissione",url:"https://otx.alienvault.com"},
+  {id:"threatintel-322",category:"threatintel",name:"MISP Project",description:"Piattaforma open-source per la condivisione di informazioni sulle minacce",url:"https://www.misp-project.org"},
+  {id:"threatintel-323",category:"threatintel",name:"Urlscan.io",description:"Scansione visiva ed analisi gratuita di URL e siti di phishing",url:"https://urlscan.io"},
+  {id:"threatintel-324",category:"threatintel",name:"ThreatFox",description:"Database open-source di IoC malevoli aggiornato in tempo reale",url:"https://threatfox.abuse.ch"},
+  {id:"tempmail-325",category:"tempmail",name:"10 Minute Mail",description:"Indirizzo e-mail usa e getta che dura 10 minuti",url:"https://10minutemail.com"},
+  {id:"tempmail-326",category:"tempmail",name:"Temp Mail",description:"Casella e-mail temporanea sicura e veloce per iscrizioni rapide",url:"https://temp-mail.org"},
+  {id:"tempmail-327",category:"tempmail",name:"Maildrop",description:"Casella di posta usa e getta gratuita senza registrazione",url:"https://maildrop.cc"},
+  {id:"tempmail-328",category:"tempmail",name:"Guerrilla Mail",description:"Ricevi ed invia e-mail in modo temporaneo ed anonimo",url:"https://www.guerrillamail.com"},
+  {id:"tempmail-329",category:"tempmail",name:"Internxt Temp Mail",description:"Generatore gratuito e privato di indirizzi email temporanei",url:"https://internxt.com/temporary-email"},
+  {id:"tempmail-330",category:"tempmail",name:"YOPmail",description:"Caselle email temporanee istantanee senza password con indirizzi personalizzabili",url:"https://yopmail.com"},
+  {id:"tempmail-331",category:"tempmail",name:"EmailOnDeck",description:"Crea un indirizzo email temporaneo anonimo in due passaggi",url:"https://www.emailondeck.com"},
+  {id:"tempmail-332",category:"tempmail",name:"TempMail.io",description:"Casella email usa e getta moderna con inoltro e domini multipli",url:"https://temp-mail.io"},
+  {id:"tempmail-333",category:"tempmail",name:"Mohmal",description:"Servizio gratuito di posta elettronica temporanea con durata estendibile",url:"https://www.mohmal.com"},
+  {id:"tempmail-334",category:"tempmail",name:"Mailinator",description:"Caselle pubbliche istantanee ideali per test QA e verifiche rapide",url:"https://www.mailinator.com"},
+  {id:"tempmail-335",category:"tempmail",name:"TrashMail",description:"Crea indirizzi email usa e getta che inoltrano alla tua casella reale",url:"https://trashmail.com"},
+  {id:"tempmail-336",category:"tempmail",name:"AnonAddy (addy.io)",description:"Servizio open-source di inoltro email anonimo e alias illimitati",url:"https://addy.io"},
+  {id:"tempmail-337",category:"tempmail",name:"DuckDuckGo Email Protection",description:"Genera indirizzi @duck.com privati che rimuovono i tracker email",url:"https://duckduckgo.com/email/"},
+  {id:"tempmail-338",category:"tempmail",name:"Burner Mail",description:"Generatore veloce di caselle temporanee per evitare spam e newsletter",url:"https://burnermail.io"},
+  {id:"virtualnumbers-339",category:"virtualnumbers",name:"Quackr",description:"SMS e numeri temporanei per verifiche di account online",url:"https://quackr.io"},
+  {id:"virtualnumbers-340",category:"virtualnumbers",name:"Receive-SMS-Online",description:"Numeri di telefono pubblici gratuiti per ricevere SMS di verifica",url:"https://receive-sms-online.info"},
+  {id:"virtualnumbers-341",category:"virtualnumbers",name:"AnonymSMS",description:"Ricevi SMS online con numeri virtuali da vari paesi gratis",url:"https://anonymsms.com"},
+  {id:"virtualnumbers-342",category:"virtualnumbers",name:"SMS24.me",description:"Numeri virtuali internazionali gratuiti per ricevere codici OTP online",url:"https://sms24.me"},
+  {id:"virtualnumbers-343",category:"virtualnumbers",name:"Receive-SMSS.com",description:"Numeri di telefono temporanei da USA, UK, Europa e Asia senza registrazione",url:"https://receive-smss.com"},
+  {id:"virtualnumbers-344",category:"virtualnumbers",name:"FreePhoneNum",description:"Numeri usa e getta gratuiti per testare la ricezione di messaggi SMS",url:"https://freephonenum.com"},
+  {id:"virtualnumbers-345",category:"virtualnumbers",name:"Temp-Number.org",description:"Servizio gratuito per ricevere SMS online su numeri virtuali condivisi",url:"https://temp-number.org"},
+  {id:"virtualnumbers-346",category:"virtualnumbers",name:"ReceiveSMS.cc",description:"Elenco aggiornato di numeri temporanei internazionali per verifiche SMS",url:"https://receivesms.cc"},
+  {id:"virtualnumbers-347",category:"virtualnumbers",name:"SMS-Online.co",description:"Piattaforma gratuita per ricevere messaggi di testo su numeri virtuali",url:"https://sms-online.co/receive-free-sms"},
+  {id:"virtualnumbers-348",category:"virtualnumbers",name:"7SIM.net",description:"Numeri virtuali temporanei da decine di paesi per verifica OTP",url:"https://7sim.net"},
+  {id:"virtualnumbers-349",category:"virtualnumbers",name:"MyTempSMS",description:"Servizio gratuito per la ricezione istantanea di SMS usa e getta",url:"https://mytempsms.com"},
+  {id:"virtualnumbers-350",category:"virtualnumbers",name:"OnlineSIM Free",description:"Numeri virtuali gratuiti e dedicati per ricevere SMS di attivazione",url:"https://onlinesim.io"},
+  {id:"virtualnumbers-351",category:"virtualnumbers",name:"SMS-Activate",description:"Piattaforma di numeri virtuali internazionali per attivazioni e test",url:"https://sms-activate.io"},
+  {id:"iplookup-352",category:"iplookup",name:"IPInfo.io",description:"Lookup ed API per indirizzi IP, ASN, ISP e geolocalizzazione",url:"https://ipinfo.io"},
+  {id:"iplookup-353",category:"iplookup",name:"WhatIsMyIPAddress",description:"Verifica il tuo IP pubblico, posizione stimata e dati di rete",url:"https://whatismyipaddress.com"},
+  {id:"iplookup-354",category:"iplookup",name:"IP-API",description:"Servizio rapido e gratuito di query IP per sviluppatori",url:"https://ip-api.com"},
+  {id:"iplookup-355",category:"iplookup",name:"BGPView",description:"Analizzatore di Autonomous System (ASN), rotte BGP e prefissi",url:"https://bgpview.io"},
+  {id:"iplookup-356",category:"iplookup",name:"AbuseIPDB",description:"Database collaborativo per verificare segnalazioni di abuso e reputazione IP",url:"https://www.abuseipdb.com"},
+  {id:"iplookup-357",category:"iplookup",name:"IPLocation.net",description:"Confronta simultaneamente i risultati di geolocalizzazione di più database IP",url:"https://www.iplocation.net"},
+  {id:"iplookup-358",category:"iplookup",name:"Hurricane Electric BGP Toolkit",description:"Strumento avanzato per analisi ASN, peering, rotte BGP e prefissi IPv4/IPv6",url:"https://bgp.he.net"},
+  {id:"iplookup-359",category:"iplookup",name:"RIPEstat",description:"Portale ufficiale RIPE NCC per statistiche, WHOIS e allocazioni IP europee",url:"https://stat.ripe.net"},
+  {id:"iplookup-360",category:"iplookup",name:"MaxMind GeoIP2 Demo",description:"Testa la precisione dei database di geolocalizzazione IP leader del settore",url:"https://www.maxmind.com/en/geoip-demo"},
+  {id:"iplookup-361",category:"iplookup",name:"IP2Location Demo",description:"Geolocalizzazione dettagliata IP con informazioni su proxy, VPN e ASN",url:"https://www.ip2location.com/demo"},
+  {id:"iplookup-362",category:"iplookup",name:"IPQualityScore (IPQS)",description:"Analisi frodi, rilevamento VPN/Proxy/Tor e punteggio di rischio di un IP",url:"https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test"},
+  {id:"iplookup-363",category:"iplookup",name:"Scamalytics IP Fraud",description:"Controlla il punteggio di rischio frode e anonimizzatori di qualsiasi indirizzo IP",url:"https://scamalytics.com/ip"},
+  {id:"iplookup-364",category:"iplookup",name:"GreyNoise Visualizer",description:"Scopri se un IP sta scansionando massivamente Internet o fa parte di servizi benigni",url:"https://viz.greynoise.io"},
+  {id:"iplookup-365",category:"iplookup",name:"BrowserLeaks IP & WebRTC",description:"Verifica il tuo IP pubblico, leak WebRTC, DNS e impronta del browser",url:"https://browserleaks.com/ip"},
+  {id:"googledorks-366",category:"googledorks",name:"Google Hacking DB",description:"Database ufficiale ed esaustivo delle query Google Dorking su Exploit-DB",url:"https://www.exploit-db.com/google-hacking-database"},
+  {id:"googledorks-367",category:"googledorks",name:"DorkSearch",description:"Motore di ricerca per generare e testare rapidamente Google Dorks",url:"https://dorksearch.com"},
+  {id:"googledorks-368",category:"googledorks",name:"Grep.app",description:"Ricerca per stringhe ed espressioni regolari in milioni di repo GitHub",url:"https://grep.app"},
+  {id:"ai-369",category:"ai",name:"Google AI Studio",description:"Accesso ai modelli Gemini Pro/Flash tramite API e playground gratis",url:"https://aistudio.google.com"},
+  {id:"ai-370",category:"ai",name:"Hugging Face Chat",description:"Chatta gratis con modelli open-source (Llama, Mistral, Qwen)",url:"https://huggingface.co/chat"},
+  {id:"ai-371",category:"ai",name:"Ollama",description:"Esegui modelli di intelligenza artificiale sul tuo computer in locale",url:"https://ollama.com"},
+  {id:"ai-372",category:"ai",name:"DuckDuckGo AI Chat",description:"Chat anonima e gratuita alimentata da modelli AI di livello avanzato",url:"https://duckduckgo.com/duckduckgo-ai-chat"},
+  {id:"ai-373",category:"ai",name:"Jan.ai",description:"Alternativa desktop open-source a ChatGPT da eseguire 100% offline",url:"https://jan.ai"},
+  {id:"ai-374",category:"ai",name:"LM Studio",description:"Interfaccia desktop per scaricare ed eseguire LLM GGUF in locale con server API",url:"https://lmstudio.ai"},
+  {id:"ai-375",category:"ai",name:"OpenRouter",description:"Gateway unificato per accedere e confrontare decine di modelli AI anche gratuiti",url:"https://openrouter.ai"},
+  {id:"ai-376",category:"ai",name:"GroqCloud",description:"Inferenza LLM ultra-veloce su chip LPU per Llama, Mixtral e Gemma con piano gratuito",url:"https://console.groq.com"},
+  {id:"ai-377",category:"ai",name:"Perplexity AI",description:"Motore di ricerca conversazionale potenziato dall'AI con fonti citate in tempo reale",url:"https://www.perplexity.ai"},
+  {id:"ai-378",category:"ai",name:"Claude.ai",description:"Assistente AI di Anthropic eccellente per analisi, scrittura e ragionamento",url:"https://claude.ai"},
+  {id:"ai-379",category:"ai",name:"ChatGPT",description:"Assistente AI conversazionale di OpenAI per testo, codice e analisi",url:"https://chatgpt.com"},
+  {id:"ai-380",category:"ai",name:"DeepSeek Chat",description:"Modello AI open-weights ad alte prestazioni per ragionamento logico e codice",url:"https://chat.deepseek.com"},
+  {id:"ai-381",category:"ai",name:"Mistral Le Chat",description:"Assistente AI europeo veloce e potente basato sui modelli Mistral",url:"https://chat.mistral.ai"},
+  {id:"ai-382",category:"ai",name:"Qwen Chat",description:"Interfaccia ufficiale per i modelli open-source Qwen di Alibaba Cloud",url:"https://chat.qwen.ai"},
+  {id:"ai-383",category:"ai",name:"Open WebUI",description:"Interfaccia web self-hosted stile ChatGPT per Ollama e API compatibili OpenAI",url:"https://openwebui.com"},
+  {id:"ai-384",category:"ai",name:"NotebookLM",description:"Assistente di ricerca Google AI che analizza e sintetizza i tuoi documenti e PDF",url:"https://notebooklm.google.com"},
+  {id:"aicoding-385",category:"aicoding",name:"Windsurf (ex Codeium)",description:"IDE agentico e completamento codice AI gratuito per sviluppatori",url:"https://windsurf.com"},
+  {id:"aicoding-386",category:"aicoding",name:"Tabnine Community",description:"Completamento codice AI orientato alla privacy per sviluppatori",url:"https://www.tabnine.com"},
+  {id:"aicoding-387",category:"aicoding",name:"Continue.dev",description:"Estensione AI open-source per VS Code e JetBrains per collegare modelli locali",url:"https://continue.dev"},
+  {id:"aicoding-388",category:"aicoding",name:"Cursor",description:"Editor di codice AI-first basato su VS Code con editing multi-file e chat codebase",url:"https://www.cursor.com"},
+  {id:"aicoding-389",category:"aicoding",name:"Cline (ex Claude Dev)",description:"Agente di programmazione autonomo open-source per VS Code",url:"https://github.com/cline/cline"},
+  {id:"aicoding-390",category:"aicoding",name:"Aider",description:"Pair programmer AI da terminale open-source che modifica direttamente i repo Git",url:"https://aider.chat"},
+  {id:"aicoding-391",category:"aicoding",name:"GitHub Copilot Free",description:"Assistente AI di GitHub con piano gratuito integrato in VS Code e GitHub",url:"https://github.com/features/copilot"},
+  {id:"aicoding-392",category:"aicoding",name:"Amazon Q Developer",description:"Assistente AI gratuito per scrittura, debug e sicurezza del codice in IDE",url:"https://aws.amazon.com/q/developer/"},
+  {id:"aicoding-393",category:"aicoding",name:"Gemini Code Assist",description:"Assistente AI di Google per completamento e generazione codice gratuito per singoli",url:"https://codeassist.google"},
+  {id:"aicoding-394",category:"aicoding",name:"Supermaven",description:"Completamento codice AI a bassissima latenza con finestra di contesto enorme",url:"https://supermaven.com"},
+  {id:"aicoding-395",category:"aicoding",name:"Blackbox AI",description:"Assistente AI per generare, cercare ed estrarre codice rapidamente",url:"https://www.blackbox.ai"},
+  {id:"aicoding-396",category:"aicoding",name:"Phind",description:"Motore di ricerca e assistente AI ottimizzato per programmatori e debugging",url:"https://www.phind.com"},
+  {id:"aicoding-397",category:"aicoding",name:"Roo Code",description:"Agente di sviluppo AI open-source avanzato per VS Code",url:"https://roocode.com"},
+  {id:"utility-398",category:"utility",name:"CyberChef",description:"Il coltellino svizzero definitivo per decodifica, cifratura e manipolazione dati",url:"https://gchq.github.io/CyberChef/"},
+  {id:"utility-399",category:"utility",name:"Regex101",description:"Costruisci, collauda e analizza espressioni regolari in tempo reale",url:"https://regex101.com"},
+  {id:"utility-400",category:"utility",name:"It-Tools",description:"Raccolta open-source di oltre 50 utility pratiche per programmatori e sysadmin",url:"https://it-tools.tech"},
+  {id:"docs-401",category:"docs",name:"DevDocs.io",description:"Tutte le documentazioni per sviluppatori ordinate in un'unica web-app offline",url:"https://devdocs.io"},
+  {id:"docs-402",category:"docs",name:"Read the Docs",description:"Piattaforma aperta di hosting per documentazioni di progetti open-source",url:"https://readthedocs.org"},
+  {id:"docs-403",category:"docs",name:"Cheatography",description:"Migliaia di cheat sheet e schede riassuntive da stampare o consultare",url:"https://cheatography.com"},
+  {id:"ctf-404",category:"ctf",name:"CTFtime",description:"Il portale mondiale degli eventi, classifiche e Writeup di Capture The Flag",url:"https://ctftime.org"},
+  {id:"ctf-405",category:"ctf",name:"OverTheWire Bandit",description:"Wargame gratuito per imparare la sicurezza ed i comandi Linux passo dopo passo",url:"https://overthewire.org/wargames/bandit/"},
+  {id:"ctf-406",category:"ctf",name:"PicoCTF",description:"Piattaforma di apprendimento della cybersecurity gratuita della Carnegie Mellon",url:"https://picoctf.org"},
+  {id:"ctf-407",category:"ctf",name:"Cmd Challenge",description:"Sfide pratiche nel terminale da riga di comando per affinare la tua Bash",url:"https://cmdchallenge.com"},
+  {id:"certificazioni-408",category:"certificazioni",name:"CompTIA Free Resources",description:"Guide e risorse di preparazione alle certificazioni IT A+, Network+ e Security+",url:"https://www.comptia.org/certifications"},
+  {id:"certificazioni-409",category:"certificazioni",name:"Cisco Learning Network",description:"Materiale di studio e percorsi ufficiali per le certificazioni CCNA e CCNP",url:"https://learningnetwork.cisco.com"},
+  {id:"certificazioni-410",category:"certificazioni",name:"AWS Certification Prep",description:"Corsi ed esami di simulazione gratuiti per certificazioni Amazon Cloud",url:"https://aws.amazon.com/certification/"},
+  {id:"hardware-411",category:"hardware",name:"PCPartPicker",description:"Configuratore hardware PC con verifica automatica di compatibilità dei pezzi",url:"https://pcpartpicker.com"},
+  {id:"hardware-412",category:"hardware",name:"Raspberry Pi Docs",description:"Documentazione e schemi di progetti ufficiali per schede Raspberry Pi",url:"https://www.raspberrypi.org"},
+  {id:"hardware-413",category:"hardware",name:"Arduino Project Hub",description:"Community aperta per progetti, codici e schemi di elettronica con Arduino",url:"https://create.arduino.cc/projecthub"},
+  {id:"hardware-414",category:"hardware",name:"iFixit",description:"Guide gratuite di riparazione passo-passo per qualsiasi dispositivo hardware",url:"https://www.ifixit.com"},
+  {id:"hwdiag-415",category:"hwdiag",name:"CPU-Z",description:"Utility essenziale per rilevare specifiche di CPU, scheda madre e RAM in tempo reale",url:"https://www.cpuid.com/softwares/cpu-z.html"},
+  {id:"hwdiag-416",category:"hwdiag",name:"GPU-Z",description:"Strumento per il monitoraggio avanzato di schede grafiche NVIDIA, AMD e Intel",url:"https://www.techpowerup.com/gpuz/"},
+  {id:"hwdiag-417",category:"hwdiag",name:"HWiNFO",description:"Monitoraggio completo e gratuito di tutti i sensori di temperatura ed hardware PC",url:"https://www.hwinfo.com"},
+  {id:"hwdiag-418",category:"hwdiag",name:"MemTest86 Free",description:"Test approfondito della memoria RAM a livello hardware prima del boot",url:"https://www.memtest86.com"},
+  {id:"hwdiag-419",category:"hwdiag",name:"FurMark",description:"Stress test ad alto carico e benchmark gratuito per schede video",url:"https://geeks3d.com/furmark/"},
+  {id:"hwdiag-420",category:"hwdiag",name:"CrystalDiskInfo",description:"Verifica lo stato di salute S.M.A.R.T. di SSD ed hard disk",url:"https://crystalmark.info/en/software/crystaldiskinfo/"},
+  {id:"hwdiag-421",category:"hwdiag",name:"CrystalDiskMark",description:"Benchmark standard e gratuito per misurare velocità sequenziali e casuali di SSD/HDD",url:"https://crystalmark.info/en/software/crystaldiskmark/"},
+  {id:"hwdiag-422",category:"hwdiag",name:"OCCT",description:"Suite completa di stress test e diagnostica per CPU, GPU, RAM e alimentatore",url:"https://www.ocbase.com"},
+  {id:"hwdiag-423",category:"hwdiag",name:"Prime95",description:"Stress test matematico estremo per verificare la stabilità della CPU e del raffreddamento",url:"https://www.mersenne.org/download/"},
+  {id:"hwdiag-424",category:"hwdiag",name:"Cinebench",description:"Benchmark multipiattaforma per valutare le prestazioni di rendering di CPU e GPU",url:"https://www.maxon.net/en/cinebench"},
+  {id:"hwdiag-425",category:"hwdiag",name:"Geekbench",description:"Benchmark cross-platform per misurare prestazioni single-core e multi-core",url:"https://www.geekbench.com"},
+  {id:"hwdiag-426",category:"hwdiag",name:"TestMem5 (TM5)",description:"Utility leggera ed estremamente efficace per individuare errori di stabilità della RAM",url:"https://www.overclock.net/threads/memory-testing-with-testmem5-tm5-with-custom-configs.1751608/"},
+  {id:"hwdiag-427",category:"hwdiag",name:"OpenHardwareMonitor",description:"Software open-source per monitorare temperature, voltaggi e ventole del PC",url:"https://openhardwaremonitor.org"},
+  {id:"hwdiag-428",category:"hwdiag",name:"Victoria SSD/HDD",description:"Utility avanzata per diagnostica superficie, settori danneggiati e S.M.A.R.T. dei dischi",url:"https://hdd.by/victoria/"},
+  {id:"hwdiag-429",category:"hwdiag",name:"HWMonitor",description:"Programma leggero di CPUID per leggere tensioni, temperature e velocità ventole",url:"https://www.cpuid.com/softwares/hwmonitor.html"},
+  {id:"podcast-430",category:"podcast",name:"NetworkChuck",description:"Canale YouTube dinamico su Networking, Python, Linux e Cybersecurity",url:"https://www.youtube.com/@NetworkChuck"},
+  {id:"podcast-431",category:"podcast",name:"Darknet Diaries",description:"Podcast sulle storie vere di hacker, attacchi informatici e cybercrime",url:"https://darknetdiaries.com"},
+  {id:"podcast-432",category:"podcast",name:"Fireship",description:"Spiegazioni lampo di tecnologie, linguaggi e novità IT in 100 secondi",url:"https://www.youtube.com/@Fireship"},
+  {id:"podcast-433",category:"podcast",name:"The CyberWire",description:"Podcast giornaliero con le principali notizie nel mondo della sicurezza",url:"https://thecyberwire.com"},
+  {id:"net-labs-434",category:"net-labs",name:"GNS3",description:"Emulatore di rete avanzato ed open-source per simulare apparati Cisco e Juniper",url:"https://www.gns3.com"},
+  {id:"net-labs-435",category:"net-labs",name:"Cisco Packet Tracer",description:"Software gratuito Cisco per la simulazione grafica di reti CCNA",url:"https://www.netacad.com/courses/packet-tracer"},
+  {id:"net-labs-436",category:"net-labs",name:"EVE-NG Community",description:"Piattaforma di emulazione di rete multi-vendor per lab enterprise",url:"https://www.eve-ng.net"},
+  {id:"net-labs-437",category:"net-labs",name:"Containerlab",description:"Strumento CLI leggero per orchestrare lab di rete tramite container Docker",url:"https://containerlab.dev"},
+  {id:"firmware-bios-438",category:"firmware-bios",name:"TechPowerUp VGA BIOS",description:"Database pubblico e gratuito di VBIOS per schede video NVIDIA e AMD",url:"https://www.techpowerup.com/vgabios/"},
+  {id:"firmware-bios-439",category:"firmware-bios",name:"Station-Drivers",description:"Repository gratuito di driver e BIOS per schede madri e periferiche PC",url:"https://www.station-drivers.com"},
+  {id:"firmware-bios-440",category:"firmware-bios",name:"Win-Raid Forum",description:"Forum di riferimento per modding BIOS, integrazione microcode ed NVMe",url:"https://forum.win-raid.com"},
+  {id:"firmware-bios-441",category:"firmware-bios",name:"Coreboot",description:"Progetto open-source per sostituire i BIOS proprietari con avvio sicuro",url:"https://www.coreboot.org"},
+  {id:"firmware-bios-442",category:"firmware-bios",name:"Libreboot",description:"Distribuzione firmware libera senza blob proprietari basata su Coreboot",url:"https://libreboot.org"},
+  {id:"firmware-bios-443",category:"firmware-bios",name:"Linux Vendor Firmware Service (LVFS)",description:"Repository ufficiale per aggiornare firmware BIOS/UEFI e periferiche su Linux",url:"https://fwupd.org"},
+  {id:"firmware-bios-444",category:"firmware-bios",name:"UEFITool",description:"Strumento open-source per ispezionare, estrarre e modificare immagini firmware UEFI",url:"https://github.com/LongSoft/UEFITool"},
+  {id:"firmware-bios-445",category:"firmware-bios",name:"OpenWrt Firmware Selector",description:"Trova e scarica firmware open-source personalizzati per centinaia di router",url:"https://firmware-selector.openwrt.org"},
+  {id:"firmware-bios-446",category:"firmware-bios",name:"DD-WRT Router Database",description:"Database firmware alternativi per potenziare router Wi-Fi compatibili",url:"https://dd-wrt.com/support/router-database/"},
+  {id:"firmware-bios-447",category:"firmware-bios",name:"Badcaps BIOS Archive",description:"Archivio community e forum tecnico per dump BIOS e riparazione schede madri",url:"https://www.badcaps.net"},
+  {id:"firmware-bios-448",category:"firmware-bios",name:"Flashrom",description:"Utility open-source per leggere, scrivere, verificare ed eliminare chip flash BIOS/ROM",url:"https://www.flashrom.org"},
+  {id:"firmware-bios-449",category:"firmware-bios",name:"TianoCore EDK II",description:"Implementazione open-source di riferimento dello standard UEFI",url:"https://www.tianocore.org"},
+  {id:"regex-parser-450",category:"regex-parser",name:"Regex101",description:"Il miglior tester ed editor di espressioni regolari in tempo reale",url:"https://regex101.com"},
+  {id:"regex-parser-451",category:"regex-parser",name:"RegExr",description:"Strumento visivo per imparare, testare e creare espressioni regolari",url:"https://regexr.com"},
+  {id:"regex-parser-452",category:"regex-parser",name:"Logstash",description:"Motore open-source per il parsing e l'elaborazione di log di sistema",url:"https://www.elastic.co/logstash"},
+  {id:"regex-parser-453",category:"regex-parser",name:"JSON Path Finder",description:"Trova il percorso esatto di qualsiasi chiave all'interno di un file JSON",url:"https://jsonpathfinder.com"},
+  {id:"monitoring-snmp-454",category:"monitoring-snmp",name:"Zabbix",description:"Piattaforma enterprise open-source per il monitoraggio di reti e server",url:"https://www.zabbix.com"},
+  {id:"monitoring-snmp-455",category:"monitoring-snmp",name:"PRTG Network Monitor (Free 100 Sensors)",description:"Monitoraggio visivo di rete gratuito fino a 100 sensori SNMP/WMI",url:"https://www.paessler.com/prtg"},
+  {id:"monitoring-snmp-456",category:"monitoring-snmp",name:"Nagios Core",description:"Sistema di monitoraggio open-source per server, switch e servizi di rete",url:"https://www.nagios.org"},
+  {id:"cabling-standards-457",category:"cabling-standards",name:"Cable Color Code Guide",description:"Riferimento visivo per i codici colore dei cavi RJ45 ethernet T568A e T568B",url:"https://www.flukenetworks.com/knowledge-base/application-or-standards-articles-bnd/t568a-vs-t568b"},
+  {id:"cabling-standards-458",category:"cabling-standards",name:"Fluke Networks Guides",description:"Guide e standard tecnici per la certificazione di reti in rame e fibra",url:"https://www.flukenetworks.com"},
+  {id:"cabling-standards-459",category:"cabling-standards",name:"TIA-568 Cabling Standards",description:"Specifiche ed informazioni sugli standard di cablaggio strutturato",url:"https://www.trowbridge.ca/cabling-standards"},
+  {id:"antivirus-sec-460",category:"antivirus-sec",name:"Malwarebytes Free",description:"Scanner gratuito per rilevare e rimuovere malware e trojan ostinati",url:"https://www.malwarebytes.com"},
+  {id:"antivirus-sec-461",category:"antivirus-sec",name:"Kaspersky Virus Removal Tool",description:"Utility portatile e gratuita per sanificare sistemi infetti senza installazione",url:"https://www.kaspersky.com/downloads/free-virus-removal-tool"},
+  {id:"antivirus-sec-462",category:"antivirus-sec",name:"Emsisoft Emergency Kit",description:"Scanner antivirus portatile per bonificare PC infetti a costo zero",url:"https://www.emsisoft.com/en/home/emergencykit/"},
+  {id:"antivirus-sec-463",category:"antivirus-sec",name:"Bitdefender Antivirus Free",description:"Protezione antivirus gratuita in tempo reale leggera ed efficace per Windows",url:"https://www.bitdefender.com/solutions/free.html"},
+  {id:"antivirus-sec-464",category:"antivirus-sec",name:"ESET Online Scanner",description:"Scansione antimalware approfondita direttamente dal browser senza installare un AV fisso",url:"https://www.eset.com/int/home/online-scanner/"},
+  {id:"antivirus-sec-465",category:"antivirus-sec",name:"ClamAV",description:"Motore antivirus open-source standard per server mail, gateway e sistemi Linux",url:"https://www.clamav.net"},
+  {id:"antivirus-sec-466",category:"antivirus-sec",name:"AdwCleaner",description:"Strumento gratuito specifico per rimuovere adware, PUP e browser hijacker",url:"https://www.malwarebytes.com/adwcleaner"},
+  {id:"antivirus-sec-467",category:"antivirus-sec",name:"HitmanPro",description:"Scanner cloud comportamentale veloce per scovare rootkit e minacce nascoste",url:"https://www.hitmanpro.com"},
+  {id:"antivirus-sec-468",category:"antivirus-sec",name:"Norton Power Eraser",description:"Tool gratuito aggressivo per rilevare ed eliminare minacce difficili da rimuovere",url:"https://support.norton.com/sp/en/us/home/current/solutions/kb20100824120155EN"},
+  {id:"antivirus-sec-469",category:"antivirus-sec",name:"Dr.Web CureIt!",description:"Utility gratuita stand-alone per la disinfezione rapida di PC Windows",url:"https://free.drweb.com/cureit/"},
+  {id:"antivirus-sec-470",category:"antivirus-sec",name:"RKill",description:"Termina i processi malware attivi in memoria prima di avviare una scansione antivirus",url:"https://www.bleepingcomputer.com/download/rkill/"},
+  {id:"antivirus-sec-471",category:"antivirus-sec",name:"YARA Rules Project",description:"Linguaggio e regole open-source per identificare e classificare famiglie malware",url:"https://virustotal.github.io/yara/"},
+  {id:"data-recovery-472",category:"data-recovery",name:"EaseUS Data Recovery Free",description:"Recupera gratuitamente fino a 2GB di file cancellati o formattati",url:"https://www.easeus.com/datarecoverywizard/free-data-recovery-software.htm"},
+  {id:"data-recovery-473",category:"data-recovery",name:"TestDisk & PhotoRec",description:"Strumento CLI open-source per ripristinare partizioni perse e dati",url:"https://www.cgsecurity.org"},
+  {id:"data-recovery-474",category:"data-recovery",name:"DMDE Free",description:"Editor di dischi ed utility per la ricerca di partizioni perse",url:"https://dmde.com"},
+  {id:"data-recovery-475",category:"data-recovery",name:"Recuva Free",description:"Utility intuitiva per recuperare file eliminati da dischi, schede SD e chiavette USB",url:"https://www.ccleaner.com/recuva"},
+  {id:"data-recovery-476",category:"data-recovery",name:"R-Studio (Demo/Tech)",description:"Software forense avanzato per il recupero dati da RAID, NTFS, EXT e file system danneggiati",url:"https://www.r-studio.com"},
+  {id:"data-recovery-477",category:"data-recovery",name:"Windows File Recovery",description:"Strumento ufficiale da riga di comando Microsoft per recuperare file eliminati su Windows",url:"https://apps.microsoft.com/detail/9n26s50ln705"},
+  {id:"data-recovery-478",category:"data-recovery",name:"Disk Drill Free",description:"Software completo per scansione approfondita e recupero file su Windows e macOS",url:"https://www.cleverfiles.com"},
+  {id:"data-recovery-479",category:"data-recovery",name:"GNU ddrescue",description:"Strumento open-source essenziale su Linux per clonare dischi con settori danneggiati",url:"https://www.gnu.org/software/ddrescue/"},
+  {id:"data-recovery-480",category:"data-recovery",name:"GParted",description:"Editor di partizioni open-source per ridimensionare, spostare e riparare volumi",url:"https://gparted.org"},
+  {id:"data-recovery-481",category:"data-recovery",name:"AOMEI Partition Assistant",description:"Gestore gratuito di partizioni e dischi per Windows (conversione MBR/GPT, controllo errori)",url:"https://www.diskpart.com"},
+  {id:"data-recovery-482",category:"data-recovery",name:"MiniTool Partition Wizard Free",description:"Utility completa per gestire partizioni, verificare file system e recuperare volumi",url:"https://www.partitionwizard.com"},
+  {id:"net-utilities-483",category:"net-utilities",name:"Angry IP Scanner",description:"Port scanner ultra-veloce ed open-source per reti locali",url:"https://angryip.org"},
+  {id:"net-utilities-484",category:"net-utilities",name:"GlassWire Free",description:"Monitor visivo di rete con grafico del traffico in tempo reale",url:"https://www.glasswire.com"},
+  {id:"net-utilities-485",category:"net-utilities",name:"Fiddler Classic",description:"Web debugging proxy gratuito per intercettare il traffico HTTP/HTTPS",url:"https://www.telerik.com/fiddler"},
+  {id:"net-utilities-486",category:"net-utilities",name:"TCPView (Sysinternals)",description:"Visualizza in tempo reale tutti gli endpoint TCP e UDP attivi e i processi associati",url:"https://learn.microsoft.com/en-us/sysinternals/downloads/tcpview"},
+  {id:"net-utilities-487",category:"net-utilities",name:"CurrPorts (NirSoft)",description:"Elenca tutte le porte TCP/IP e UDP aperte sul PC con possibilità di chiudere connessioni",url:"https://www.nirsoft.net/utils/cports.html"},
+  {id:"net-utilities-488",category:"net-utilities",name:"PingPlotter Free",description:"Strumento grafico per diagnosticare latenza, jitter e packet loss lungo tutta la rotta",url:"https://www.pingplotter.com"},
+  {id:"net-utilities-489",category:"net-utilities",name:"WinMTR",description:"Combina traceroute e ping in un unico strumento diagnostico leggero per Windows",url:"https://sourceforge.net/projects/winmtr/"},
+  {id:"net-utilities-490",category:"net-utilities",name:"iPerf3",description:"Strumento standard CLI per misurare la massima larghezza di banda reale tra due host",url:"https://iperf.fr"},
+  {id:"net-utilities-491",category:"net-utilities",name:"Netcat (nc)",description:"Il coltellino svizzero TCP/UDP per debugging connessioni, banner grabbing e trasferimenti",url:"https://nc110.sourceforge.io"},
+  {id:"net-utilities-492",category:"net-utilities",name:"Advanced IP Scanner",description:"Scanner di rete gratuito per individuare dispositivi LAN, indirizzi MAC e condivisioni",url:"https://www.advanced-ip-scanner.com"},
+  {id:"net-utilities-493",category:"net-utilities",name:"WireGuard",description:"VPN moderna, ultra-veloce e crittograficamente sicura open-source",url:"https://www.wireguard.com"},
+  {id:"net-utilities-494",category:"net-utilities",name:"Tailscale",description:"Rete mesh VPN zero-config basata su WireGuard per collegare dispositivi ovunque",url:"https://tailscale.com"},
+  {id:"net-utilities-495",category:"net-utilities",name:"OpenSpeedTest",description:"Speed test HTML5 self-hosted e online per misurare la velocità della rete locale o WAN",url:"https://openspeedtest.com"},
+  {id:"db-tools-496",category:"db-tools",name:"TablePlus Free",description:"Client moderno ed elegante per MySQL, PostgreSQL, SQLite e Redis",url:"https://tableplus.com"},
+  {id:"db-tools-497",category:"db-tools",name:"Beekeeper Studio",description:"Editor e gestore SQL open-source per la gestione di più database",url:"https://www.beekeeperstudio.io"},
+  {id:"db-tools-498",category:"db-tools",name:"MongoDB Compass",description:"Interfaccia grafica ufficiale e gratuita per esplorare dati su MongoDB",url:"https://www.mongodb.com/products/tools/compass"},
+  {id:"db-tools-499",category:"db-tools",name:"DBeaver Community",description:"Client database universale open-source per decine di motori SQL e NoSQL",url:"https://dbeaver.io"},
+  {id:"db-tools-500",category:"db-tools",name:"HeidiSQL",description:"Client leggero, veloce e gratuito per MariaDB, MySQL, SQL Server e PostgreSQL",url:"https://www.heidisql.com"},
+  {id:"db-tools-501",category:"db-tools",name:"pgAdmin",description:"Piattaforma open-source ufficiale per l'amministrazione e lo sviluppo su PostgreSQL",url:"https://www.pgadmin.org"},
+  {id:"db-tools-502",category:"db-tools",name:"phpMyAdmin",description:"Interfaccia web open-source standard per gestire database MySQL e MariaDB",url:"https://www.phpmyadmin.net"},
+  {id:"db-tools-503",category:"db-tools",name:"Adminer",description:"Gestore database completo racchiuso in un singolo file PHP leggero e veloce",url:"https://www.adminer.org"},
+  {id:"db-tools-504",category:"db-tools",name:"DB Browser for SQLite",description:"Strumento visuale open-source per creare, progettare e modificare file SQLite",url:"https://sqlitebrowser.org"},
+  {id:"db-tools-505",category:"db-tools",name:"Redis Insight",description:"Interfaccia grafica ufficiale per esplorare, monitorare ed eseguire query su Redis",url:"https://redis.io/insight/"},
+  {id:"db-tools-506",category:"db-tools",name:"DataGrip (EAP / Student)",description:"IDE professionale di JetBrains per database e SQL con analisi avanzata delle query",url:"https://www.jetbrains.com/datagrip/"},
+  {id:"db-tools-507",category:"db-tools",name:"DB Fiddle",description:"Ambiente online istantaneo per testare query SQL e schemi senza installare nulla",url:"https://www.db-fiddle.com"},
+  {id:"boot-usb-508",category:"boot-usb",name:"BalenaEtcher",description:"Strumento open-source per scrivere immagini ISO su chiavette USB e SD",url:"https://etcher.balena.io"},
+  {id:"boot-usb-509",category:"boot-usb",name:"Hiren's BootCD PE",description:"Ambiente di soccorso live basato su Windows 10 con decine di utility",url:"https://www.hirensbootcd.org"},
+  {id:"boot-usb-510",category:"boot-usb",name:"SystemRescue",description:"OS Linux live avviabile via USB per il ripristino di dischi e partizioni",url:"https://www.system-rescue.org"},
+  {id:"boot-usb-511",category:"boot-usb",name:"Ventoy",description:"Crea chiavette USB multi-boot: basta copiare i file ISO senza riformattare",url:"https://www.ventoy.net"},
+  {id:"boot-usb-512",category:"boot-usb",name:"Rufus",description:"Utility veloce e open-source per creare USB avviabili Windows e Linux",url:"https://rufus.ie"},
+  {id:"boot-usb-513",category:"boot-usb",name:"Medicat USB",description:"Toolkit avviabile completo per manutenzione PC, diagnostica, backup e rimozione malware",url:"https://medicatusb.com"},
+  {id:"boot-usb-514",category:"boot-usb",name:"Tails OS",description:"Sistema operativo live incentrato su privacy e anonimato che instrada tutto su Tor",url:"https://tails.net"},
+  {id:"boot-usb-515",category:"boot-usb",name:"GParted Live",description:"Immagine ISO avviabile dedicata al partizionamento e alla gestione dei dischi",url:"https://gparted.org/livecd.php"},
+  {id:"boot-usb-516",category:"boot-usb",name:"Clonezilla Live",description:"Distribuzione live minimale per clonazione dischi e imaging bare-metal",url:"https://clonezilla.org/clonezilla-live.php"},
+  {id:"boot-usb-517",category:"boot-usb",name:"Raspberry Pi Imager",description:"Strumento ufficiale per scrivere sistemi operativi su schede SD e drive USB",url:"https://www.raspberrypi.com/software/"},
+  {id:"boot-usb-518",category:"boot-usb",name:"netboot.xyz",description:"Avvia e installa decine di sistemi operativi e utility direttamente via rete PXE",url:"https://netboot.xyz"},
+  {id:"backup-sync-519",category:"backup-sync",name:"FreeFileSync",description:"Strumento open-source per la sincronizzazione rapida di cartelle e dischi",url:"https://freefilesync.org"},
+  {id:"backup-sync-520",category:"backup-sync",name:"Syncthing",description:"Sincronizzazione file P2P continua, privata e cifrata open-source",url:"https://syncthing.net"},
+  {id:"backup-sync-521",category:"backup-sync",name:"Duplicati",description:"Client di backup cifrato ed open-source su server remoti e cloud",url:"https://www.duplicati.com"},
+  {id:"backup-sync-522",category:"backup-sync",name:"Rclone",description:"Il coltellino svizzero da riga di comando per sincronizzare file con oltre 70 cloud storage",url:"https://rclone.org"},
+  {id:"backup-sync-523",category:"backup-sync",name:"Veeam Agent Free",description:"Soluzione professionale gratuita per il backup completo bare-metal di PC e server Windows/Linux",url:"https://www.veeam.com/products/free/microsoft-windows.html"},
+  {id:"backup-sync-524",category:"backup-sync",name:"Restic",description:"Programma di backup moderno, veloce, verificabile e cifrato scritto in Go",url:"https://restic.net"},
+  {id:"backup-sync-525",category:"backup-sync",name:"BorgBackup",description:"Software di backup con deduplicazione avanzata, compressione e cifratura autenticata",url:"https://www.borgbackup.org"},
+  {id:"backup-sync-526",category:"backup-sync",name:"Kopia",description:"Strumento di backup veloce e cifrato con interfaccia grafica e CLI multipiattaforma",url:"https://kopia.io"},
+  {id:"backup-sync-527",category:"backup-sync",name:"Timeshift",description:"Utility open-source per creare snapshot incrementali di sistema su Linux (RSYNC/BTRFS)",url:"https://github.com/linuxmint/timeshift"},
+  {id:"backup-sync-528",category:"backup-sync",name:"Macrium Reflect",description:"Soluzione storica per la creazione di immagini disco esatte e clonazione SSD",url:"https://www.macrium.com"},
+  {id:"backup-sync-529",category:"backup-sync",name:"Nextcloud",description:"Piattaforma open-source self-hosted per sincronizzazione file, cloud privato e collaborazione",url:"https://nextcloud.com"}
+];
+
+const FAV_KEY = "it-toolbox:favorites";
+const THEME_KEY = "it-toolbox:hud-theme";
+
+let favorites = new Set();
+try {
+  const saved = JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+  if (Array.isArray(saved)) favorites = new Set(saved);
+} catch (e) {}
+
+function applyTheme(themeName) {
+  const valid = ["slate", "matrix", "crimson"].includes(themeName) ? themeName : "slate";
+  document.body.setAttribute("data-theme", valid);
+  const sel = document.getElementById("themeSelect");
+  if (sel) sel.value = valid;
+  document.querySelectorAll("#gateStyleGrid .style-option").forEach(btn => {
+    btn.classList.toggle("selected", btn.getAttribute("data-pick") === valid);
+  });
+  try { localStorage.setItem(THEME_KEY, valid); } catch (e) {}
+}
+
+try {
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  if (savedTheme) applyTheme(savedTheme);
+} catch (e) {}
+
+let searchText = "";
+let selectedCat = "all";
+let openGroups = new Set(CATEGORIES.map(c => c.id));
+
+function saveFavs() {
+  try { localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(favorites))); } catch (e) {}
+}
+
+function norm(s) {
+  return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+function esc(s) {
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function getHost(u) {
+  try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u; }
+}
+
+function notify(msg) {
+  const box = document.getElementById("toasts");
+  const el = document.createElement("div");
+  el.className = "toast-item";
+  el.textContent = "✅ " + msg;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), 2200);
+}
+
+function copyUrl(item) {
+  const done = () => notify(`Link di "${item.name}" copiato`);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(item.url).then(done).catch(() => fallbackCopy(item.url, done));
+  } else {
+    fallbackCopy(item.url, done);
+  }
+}
+
+function fallbackCopy(txt, cb) {
+  const ta = document.createElement("textarea");
+  ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  document.body.removeChild(ta);
+  cb();
+}
+
+function toggleFav(id) {
+  if (favorites.has(id)) favorites.delete(id);
+  else favorites.add(id);
+  saveFavs();
+  renderAll();
+}
+
+function setCat(catId) {
+  selectedCat = catId;
+  if (catId !== "all" && catId !== "favorites") openGroups.add(catId);
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+  renderAll();
+}
+
+function renderSidebar(list) {
+  const nav = document.getElementById("catNav");
+  nav.innerHTML = "";
+  const counts = {};
+  list.forEach(r => { counts[r.category] = (counts[r.category] || 0) + 1; });
+  const favMatches = list.filter(r => favorites.has(r.id)).length;
+
+  const mkBtn = (id, emoji, label, count, color) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "nav-btn" + (selectedCat === id ? " active" : "");
+    b.innerHTML = `<span class="nav-left"><span style="color:${color || "inherit"}">${emoji}</span><span class="nav-label">${esc(label)}</span></span><span class="nav-badge">${count}</span>`;
+    b.onclick = () => setCat(id);
+    return b;
+  };
+
+  nav.appendChild(mkBtn("all", "🗂️", "Tutte le risorse", list.length, "var(--primary)"));
+  nav.appendChild(mkBtn("favorites", "⭐", "Preferiti", favMatches, "var(--star)"));
+
+  const div = document.createElement("div");
+  div.className = "nav-divider";
+  nav.appendChild(div);
+
+  CATEGORIES.forEach(cat => {
+    nav.appendChild(mkBtn(cat.id, cat.emoji, cat.label, counts[cat.id] || 0, cat.color));
+  });
+}
+
+function makeCard(item) {
+  const cat = CAT_MAP[item.category] || { emoji: "🔗", label: item.category, color: "var(--primary)" };
+  const isFav = favorites.has(item.id);
+  const el = document.createElement("article");
+  el.className = "res-card";
+  el.innerHTML = `
+    <div>
+      <div class="res-top">
+        <div class="res-identity">
+          <div class="res-badge-ico" style="color:${esc(cat.color)}">${cat.emoji}</div>
+          <div style="min-width:0;">
+            <h4 class="res-name" title="${esc(item.name)}">${esc(item.name)}</h4>
+            <p class="res-host">${esc(getHost(item.url))}</p>
+          </div>
+        </div>
+        <button type="button" class="star-btn ${isFav ? "starred" : ""}" title="Salva nei preferiti">${isFav ? "⭐" : "☆"}</button>
+      </div>
+      <p class="res-desc" style="margin-top:10px;">${esc(item.description)}</p>
+    </div>
+    <div class="res-foot">
+      <span class="cat-tag" style="color:${esc(cat.color)}">${cat.emoji} ${esc(cat.label)}</span>
+      <div class="res-btns">
+        <button type="button" class="mini-btn copy-btn" title="Copia URL">📋</button>
+        <a class="mini-btn" href="${esc(item.url)}" target="_blank" rel="noopener noreferrer" title="Apri risorsa">↗</a>
+      </div>
+    </div>
+  `;
+  el.querySelector(".star-btn").onclick = () => toggleFav(item.id);
+  el.querySelector(".copy-btn").onclick = () => copyUrl(item);
+  return el;
+}
+
+function renderAll() {
+  const q = norm(searchText.trim());
+  const filtered = !q ? RESOURCES : RESOURCES.filter(r => {
+    const cat = CAT_MAP[r.category] || { label: "" };
+    return norm(`${r.name} ${r.description} ${r.url} ${cat.label}`).includes(q);
+  });
+
+  renderSidebar(filtered);
+
+  document.getElementById("favBadge").textContent = favorites.size;
+  document.getElementById("favToggle").classList.toggle("active", selectedCat === "favorites");
+
+  const container = document.getElementById("gridContainer");
+  container.innerHTML = "";
+
+  const viewTitle = document.getElementById("viewTitle");
+  const viewSub = document.getElementById("viewSub");
+  const bulkBar = document.getElementById("bulkBar");
+
+  if (selectedCat === "favorites") {
+    bulkBar.style.display = "none";
+    viewTitle.textContent = "⭐ Preferiti";
+    viewSub.textContent = "Risorse salvate localmente nel tuo browser.";
+    const favList = filtered.filter(r => favorites.has(r.id));
+    document.getElementById("pillCount").textContent = `${favList.length} risultati`;
+    if (!favList.length) {
+      container.innerHTML = `<div class="empty-box"><strong>Nessun preferito trovato</strong><p style="margin:6px 0 0;font-size:12.5px;">Clicca su ☆ su qualsiasi scheda per aggiungerla qui.</p></div>`;
+      return;
+    }
+    const grid = document.createElement("div");
+    grid.className = "cards-grid";
+    favList.forEach(r => grid.appendChild(makeCard(r)));
+    container.appendChild(grid);
+    return;
+  }
+
+  const catsToShow = selectedCat === "all" ? CATEGORIES : [CAT_MAP[selectedCat]].filter(Boolean);
+  bulkBar.style.display = catsToShow.length > 1 ? "flex" : "none";
+
+  if (selectedCat === "all") {
+    viewTitle.textContent = "Tutte le risorse";
+    viewSub.textContent = "Raccolta completa di strumenti IT, AI, OSINT, Networking e Cybersecurity.";
+  } else if (catsToShow[0]) {
+    viewTitle.textContent = `${catsToShow[0].emoji} ${catsToShow[0].label}`;
+    viewSub.textContent = catsToShow[0].description;
+  }
+
+  const groups = catsToShow
+    .map(cat => ({ cat, items: filtered.filter(r => r.category === cat.id) }))
+    .filter(g => g.items.length > 0);
+
+  document.getElementById("pillCount").textContent = `${filtered.length} risultati`;
+
+  if (!groups.length) {
+    container.innerHTML = `<div class="empty-box"><strong>Nessun risultato</strong><p style="margin:6px 0 0;font-size:12.5px;">Prova con un'altra parola chiave o cambia categoria.</p></div>`;
+    return;
+  }
+
+  const forceOpen = Boolean(q) || selectedCat !== "all";
+  groups.forEach(({ cat, items }) => {
+    const isOpen = forceOpen || openGroups.has(cat.id);
+    const box = document.createElement("section");
+    box.className = "group-box" + (isOpen ? " open" : "");
+
+    const head = document.createElement("button");
+    head.type = "button";
+    head.className = "group-head";
+    head.innerHTML = `
+      <div class="group-title-wrap">
+        <div class="group-icon" style="color:${esc(cat.color)}">${cat.emoji}</div>
+        <div>
+          <h3>${esc(cat.label)}</h3>
+          <span>${esc(cat.description)}</span>
+        </div>
+      </div>
+      <div class="group-meta">
+        <span class="group-count">${items.length} ${items.length === 1 ? "risorsa" : "risorse"}</span>
+        <span class="chev">▾</span>
+      </div>
+    `;
+    head.onclick = () => {
+      if (openGroups.has(cat.id)) {
+        openGroups.delete(cat.id);
+        box.classList.remove("open");
+      } else {
+        openGroups.add(cat.id);
+        box.classList.add("open");
+      }
+    };
+
+    const panel = document.createElement("div");
+    panel.className = "group-panel";
+    const grid = document.createElement("div");
+    grid.className = "cards-grid";
+    items.forEach(r => grid.appendChild(makeCard(r)));
+    panel.appendChild(grid);
+
+    box.appendChild(head);
+    box.appendChild(panel);
+    container.appendChild(box);
+  });
+}
+
+// Init metrics & events
+document.getElementById("gateCats").textContent = CATEGORIES.length;
+document.getElementById("gateRes").textContent = RESOURCES.length;
+document.getElementById("sideStats").textContent = `${CATEGORIES.length} cat · ${RESOURCES.length} tool`;
+document.getElementById("footInfo").textContent = `IT Toolbox Pro · ${CATEGORIES.length} categorie · ${RESOURCES.length} risorse · Stili commutabili dal vivo`;
+
+document.querySelectorAll("#gateStyleGrid .style-option").forEach(btn => {
+  btn.onclick = () => applyTheme(btn.getAttribute("data-pick"));
+});
+const hideGate = () => document.getElementById("gate").classList.add("hidden-gate");
+document.getElementById("launchBtn").onclick = hideGate;
+document.getElementById("gate").addEventListener("click", (e) => { if (e.target.id === "gate") hideGate(); });
+document.getElementById("themeSelect").onchange = (e) => applyTheme(e.target.value);
+
+const sInput = document.getElementById("searchInput");
+const cBtn = document.getElementById("clearBtn");
+sInput.oninput = (e) => {
+  searchText = e.target.value;
+  cBtn.style.display = searchText ? "flex" : "none";
+  renderAll();
+};
+cBtn.onclick = () => {
+  searchText = ""; sInput.value = ""; cBtn.style.display = "none"; renderAll();
+};
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault(); sInput.focus();
+  }
+  if (e.key === "Escape" && document.activeElement === sInput) {
+    searchText = ""; sInput.value = ""; cBtn.style.display = "none"; sInput.blur(); renderAll();
+  }
+});
+
+document.getElementById("favToggle").onclick = () => {
+  setCat(selectedCat === "favorites" ? "all" : "favorites");
+};
+document.getElementById("expandAllBtn").onclick = () => {
+  CATEGORIES.forEach(c => openGroups.add(c.id));
+  renderAll();
+};
+document.getElementById("collapseAllBtn").onclick = () => {
+  openGroups.clear();
+  renderAll();
+};
+
+document.getElementById("mobileMenuBtn").onclick = () => {
+  document.getElementById("sidebar").classList.add("open");
+  document.getElementById("overlay").classList.add("show");
+};
+document.getElementById("closeMenuBtn").onclick = () => {
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+};
+document.getElementById("overlay").onclick = () => {
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+};
+
+(function setModDate(){
+  const el = document.getElementById("lastModLbl");
+  if (!el) return;
+  let d = "19/11/2026";
+  try {
+    if (document.lastModified) {
+      const dt = new Date(document.lastModified);
+      if (!isNaN(dt.getTime()) && dt.getFullYear() >= 2025) {
+        d = `${String(dt.getDate()).padStart(2,"0")}/${String(dt.getMonth()+1).padStart(2,"0")}/${dt.getFullYear()}`;
+      }
+    }
+  } catch (e) {}
+  el.textContent = `🕒 Ultima modifica: ${d}`;
+})();
+
+renderAll();
+</script>
+</body>
+</html>
