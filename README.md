@@ -1,4 +1,6 @@
 <div align="center">
+  <img width="690" height="431" alt="ssssssss" src="https://github.com/user-attachments/assets/1bcc66ea-d0c0-456c-b014-1f12056a49cf" />
+
   <a href="https://GabrieleTech0101010.github.io/it-toolbox-pro/">
     <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=900&size=48&pause=1000&color=00FF66&center=true&vCenter=true&width=800&height=100&lines=IT+%26+AI+TOOLBOX+PRO;SYSTEM+INITIALIZED...;WE+ARE+LEGION." alt="IT Toolbox Pro Title" />
   </a>
@@ -59,4 +61,5 @@ The offline-first dashboard for sysadmins, ethical hackers, and developers.
 🟢 Technical Features
 * **100% Offline**: Requires no server or complex setup—runs directly by opening the HTML file in your browser.
 * **Total Privacy**: Your bookmarks and favorites are saved exclusively locally within your browser (LocalStorage).
-* **Matrix Splash Screen & UI**: Interfaccia cyber con animazioni Matrix, barra di ricerca istantanea (filtro live su 350+ risorse), sistema di preferiti con un clic e schede a scomparsa per categoria.
+* **Matrix Splash Screen & UI**: Interfaccia cyber con animazioni Matrix, barra di ricerca istantanea (filtro live su 350+ risorse), sistema di preferiti con un clic e schede a scomparsa per categoria.<img width="1881" height="908" alt="ssssss" src="https://github.com/user-attachments/assets/3a1ed775-a80f-4d01-9725-5b46c2e9a18a" />
+
